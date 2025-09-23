@@ -13,7 +13,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "t_worker", schema = "factory")
-public class Worker {
+public class WorkerEntity {
 
     @Id
     @ColumnDefault("gen_random_uuid()")
@@ -29,7 +29,7 @@ public class Worker {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
+    private DepartmentEntity department;
 
     @Column(name = "work_position", length = 100)
     private String workPosition;

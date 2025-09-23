@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS factory.t_product_type_parts CASCADE;
 DROP TABLE IF EXISTS factory.t_part CASCADE;
 DROP TABLE IF EXISTS factory.t_product_type CASCADE;
 
--- Department table
+-- model.Department table
 CREATE TABLE factory.t_department (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code VARCHAR(50) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE factory.t_department (
     name VARCHAR(100) NOT NULL
 );
 
--- Worker table
+-- model.Worker table
 CREATE TABLE factory.t_worker (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(100) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE factory.t_work_order (
         ON DELETE RESTRICT
 );
 
--- Work Orders ↔ Worker (M:N)
+-- Work Orders ↔ model.Worker (M:N)
 CREATE TABLE factory.t_work_orders_for_worker (
     worker_id UUID NOT NULL,
     work_order_id UUID NOT NULL,
