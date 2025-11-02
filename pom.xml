@@ -17,7 +17,7 @@
 		<spring-webflux.version>6.2.10</spring-webflux.version>
 
 		<spring-boot-starter-graphql.version>3.5.5</spring-boot-starter-graphql.version>
-		<graphql.codegen.version>1.61.5</graphql.codegen.version>
+		<graphql-java-codegen.version>5.10.0</graphql-java-codegen.version>
 		<build-helper.version>3.6.1</build-helper.version>
 		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
 		<spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
@@ -25,6 +25,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<version>3.5.5</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.12.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<modules>
 		<module>persistence</module>

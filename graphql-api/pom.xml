@@ -11,57 +11,79 @@
 
     <artifactId>graphql-api</artifactId>
 
+    <properties>
+        <spring-boot-starter-graphql.version>3.3.5</spring-boot-starter-graphql.version>
+        <build-helper.version>3.6.1</build-helper.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>my.projects</groupId>
             <artifactId>domain</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-graphql</artifactId>
             <version>${spring-boot-starter-graphql.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphql-java</artifactId>
+            <version>24.1</version>
+        </dependency>
+
+        <!-- ✅ Runtime knihovna pro anotace a helper třídy generované pluginem -->
+        <dependency>
+            <groupId>com.graphql-java-generator</groupId>
+            <artifactId>graphql-java-common-runtime</artifactId>
+            <version>3.0.1</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Plugin pro generování POJO z GraphQL schémat -->
             <plugin>
-                <groupId>io.github.deweyjose</groupId>
-                <artifactId>graphqlcodegen-maven-plugin</artifactId>
-                <version>${graphql.codegen.version}</version>
+                <groupId>com.graphql-java-generator</groupId>
+                <artifactId>graphql-maven-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
-                        <id>dgs-codegen</id>
+                        <id>generate-graphql-models</id>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>generatePojo</goal>
                         </goals>
-                        <configuration>
-                            <schemaPaths>
-                                <param>src/main/resources/graphql-client</param>
-                            </schemaPaths>
-                            <packageName>my.projects.factory.codegen</packageName>
-                            <addGeneratedAnnotation>true</addGeneratedAnnotation>
-                            <disableDatesInGeneratedAnnotation>true</disableDatesInGeneratedAnnotation>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <schemaFileFolder>src/main/resources/graphql/model</schemaFileFolder>
+                    <schemaFilePattern>/*.graphqls</schemaFilePattern>
+                    <targetSourceFolder>${project.build.directory}/generated-sources/graphql</targetSourceFolder>
+                    <packageName>my.projects.factory.codegen</packageName>
+                    <typePrefix>Gql</typePrefix>
+                    <mode>server</mode>
+                    <skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+                </configuration>
             </plugin>
 
+            <!-- Registrace generovaných zdrojů -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>${build-helper.version}</version>
                 <executions>
                     <execution>
-                        <id>add-dgs-source</id>
+                        <id>add-graphql-source</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-source</goal>
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources</source>
+                                <source>${project.build.directory}/generated-sources/graphql</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -69,5 +91,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
