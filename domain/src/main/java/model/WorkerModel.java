@@ -5,9 +5,9 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record Worker(UUID id, String name, String surname, UUID departmentId, String workPosition) {
+public record WorkerModel(UUID id, String name, String surname, UUID departmentId, String workPosition) {
 
-    public Worker {
+    public WorkerModel {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name must not be blank");
         }

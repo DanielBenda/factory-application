@@ -1,8 +1,8 @@
 package service.serviceImpl;
 
-import entity.WorkerEntity;
+import entity.Worker;
 import mapper.WorkerMapper;
-import model.Worker;
+import model.WorkerModel;
 import org.springframework.stereotype.Service;
 import repository.WorkerRepository;
 import service.WorkerService;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Service
 public class WorkerServiceImpl
-        extends CrudServiceImpl<Worker, WorkerEntity, UUID>
+        extends CrudServiceImpl<WorkerModel, Worker, UUID>
         implements WorkerService {
 
     private final WorkerRepository repository;
@@ -24,7 +24,7 @@ public class WorkerServiceImpl
     }
 
     @Override
-    public Worker findBySurname(String surname) {
+    public WorkerModel findBySurname(String surname) {
         return repository.findBySurname(surname)
                 .map(mapper::toModel)
                 .orElse(null);

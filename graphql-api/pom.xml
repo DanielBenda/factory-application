@@ -26,7 +26,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-graphql</artifactId>
-            <version>${spring-boot-starter-graphql.version}</version>
+            <version>3.5.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>3.5.7</version>
         </dependency>
 
         <dependency>
@@ -35,59 +41,104 @@
             <version>24.1</version>
         </dependency>
 
-        <!-- ✅ Runtime knihovna pro anotace a helper třídy generované pluginem -->
         <dependency>
             <groupId>com.graphql-java-generator</groupId>
-            <artifactId>graphql-java-common-runtime</artifactId>
+            <artifactId>graphql-java-client-runtime</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java</groupId>
+            <artifactId>graphiql-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.19.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.graphql-java-generator</groupId>
+            <artifactId>graphql-java-client-runtime</artifactId>
             <version>3.0.1</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Plugin pro generování POJO z GraphQL schémat -->
             <plugin>
                 <groupId>com.graphql-java-generator</groupId>
                 <artifactId>graphql-maven-plugin</artifactId>
                 <version>3.0.1</version>
                 <executions>
                     <execution>
-                        <id>generate-graphql-models</id>
+                        <id>generate-pojos</id>
                         <goals>
-                            <goal>generatePojo</goal>
+                            <goal>generateClientCode</goal>
                         </goals>
+                        <configuration>
+                            <inputPrefix>Gql</inputPrefix>
+                            <typePrefix>Gql</typePrefix>
+                            <unionPrefix>Gql</unionPrefix>
+                            <skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
+
+                            <packageName>my.projects.factory.generated</packageName>
+                            <schemaFileFolder>src/main/resources/graphql</schemaFileFolder>
+                            <schemaFilePattern>**/*.graphqls</schemaFilePattern>
+                            <copyRuntimeSources>false</copyRuntimeSources>
+
+                            <customScalars>
+                                <customScalar>
+                                    <graphQLTypeName>UUID</graphQLTypeName>
+                                    <javaType>java.util.UUID</javaType>
+                                    <graphQLScalarTypeStaticField>
+                                        scalars.UUIDScalar.UUID
+                                    </graphQLScalarTypeStaticField>
+                                </customScalar>
+                            </customScalars>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <schemaFileFolder>src/main/resources/graphql/model</schemaFileFolder>
-                    <schemaFilePattern>/*.graphqls</schemaFilePattern>
-                    <targetSourceFolder>${project.build.directory}/generated-sources/graphql</targetSourceFolder>
-                    <packageName>my.projects.factory.codegen</packageName>
-                    <typePrefix>Gql</typePrefix>
-                    <mode>server</mode>
-                    <skipGenerationIfSchemaHasNotChanged>true</skipGenerationIfSchemaHasNotChanged>
-                </configuration>
             </plugin>
 
-            <!-- Registrace generovaných zdrojů -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>${build-helper.version}</version>
+                <version>3.6.1</version>
                 <executions>
                     <execution>
-                        <id>add-graphql-source</id>
+                        <id>add-generated</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-source</goal>
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/graphql</source>
+                                <source>${project.build.directory}/generated-sources/graphql-maven-plugin</source>
                             </sources>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/generated_spring_autoconfiguration/**</exclude>
+                        <exclude>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

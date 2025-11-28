@@ -1,14 +1,14 @@
 package repository;
 
-import entity.WorkerEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import entity.Worker;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface WorkerRepository extends JpaRepository<WorkerEntity, UUID> {
+public interface WorkerRepository extends CrudRepository<Worker, UUID> {
 
-    Optional<WorkerEntity> findBySurname(String surname);
+    Optional<Worker> findBySurname(String surname);
 }

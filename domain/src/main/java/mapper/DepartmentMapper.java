@@ -1,13 +1,13 @@
 package mapper;
 
-import entity.DepartmentEntity;
-import model.Department;
+import entity.Department;
+import model.DepartmentModel;
 
-public class DepartmentMapper implements EntityMapper<Department, DepartmentEntity> {
+public class DepartmentMapper implements EntityMapper<DepartmentModel, Department> {
 
     @Override
-    public Department toModel(DepartmentEntity department){
-        return Department.builder()
+    public DepartmentModel toModel(Department department){
+        return DepartmentModel.builder()
                 .id(department.getId())
                 .code(department.getCode())
                 .leader(department.getLeader())
@@ -16,12 +16,12 @@ public class DepartmentMapper implements EntityMapper<Department, DepartmentEnti
     }
 
     @Override
-    public DepartmentEntity toEntity(Department department){
-        DepartmentEntity departmentEntity = new DepartmentEntity();
-        departmentEntity.setId(department.id());
-        departmentEntity.setCode(department.code());
-        departmentEntity.setLeader(department.leader());
-        departmentEntity.setName(department.name());
-        return departmentEntity;
+    public Department toEntity(DepartmentModel departmentModel){
+        Department department = new Department();
+        department.setId(departmentModel.id());
+        department.setCode(departmentModel.code());
+        department.setLeader(departmentModel.leader());
+        department.setName(departmentModel.name());
+        return department;
     }
 }

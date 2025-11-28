@@ -1,6 +1,7 @@
 package resolver;
 
-import model.Worker;
+import model.WorkerModel;
+import my.projects.factory.generated.GqlWorker;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -19,28 +20,35 @@ public class WorkerResolver {
         this.workerService = workerService;
     }
 
-    @QueryMapping
-    public List<Worker> workers() {
-        return workerService.findAll();
+    @QueryMapping(name = "workers")
+    public List<GqlWorker> workers() {
+        return workerService.findAll()
+                .stream()
+                .map(this::toGql)
+                .toList();
     }
 
     @QueryMapping
-    public Worker workerById(@Argument UUID id) {
-        return workerService.findById(id).orElse(null);
+    public GqlWorker workerById(@Argument UUID id) {
+        return workerService.findById(id)
+                .map(this::toGql)
+                .orElse(null);
     }
 
     @MutationMapping
-    public Worker createWorker(@Argument String name,
-                                         @Argument String surname,
-                                         @Argument String position) {
-        // TODO add department id
-        Worker worker = Worker.builder()
+    public GqlWorker createWorker(@Argument String name,
+                                  @Argument String surname,
+                                  @Argument String position) {
+        // TODO: add departmentId handling
+        WorkerModel worker = WorkerModel.builder()
                 .id(UUID.randomUUID())
                 .name(name)
                 .surname(surname)
+                .departmentId(UUID.randomUUID())
                 .workPosition(position)
                 .build();
-        return workerService.create(worker);
+        WorkerModel created = workerService.create(worker);
+        return toGql(created);
     }
 
     @MutationMapping
@@ -48,5 +56,30 @@ public class WorkerResolver {
         workerService.delete(id);
         return true;
     }
-}
 
+    private GqlWorker toGql(WorkerModel model) {
+        if (model == null) {
+            return null;
+        }
+        return GqlWorker.builder()
+                .withId(model.id())
+                .withName(model.name())
+                .withSurname(model.surname())
+                .withDepartmentId(model.departmentId())
+                .withWorkPosition(model.workPosition())
+                .build();
+    }
+
+    private WorkerModel fromGql(GqlWorker gql) {
+        if (gql == null) {
+            return null;
+        }
+        return WorkerModel.builder()
+                .id(gql.getId())
+                .name(gql.getName())
+                .surname(gql.getSurname())
+                .departmentId(gql.getDepartmentId())
+                .workPosition(gql.getWorkPosition())
+                .build();
+    }
+}

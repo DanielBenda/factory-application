@@ -5,9 +5,9 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record Department(UUID id, String code, String leader, String name) {
+public record DepartmentModel(UUID id, String code, String leader, String name) {
 
-    public Department {
+    public DepartmentModel {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("model.Department code must not be blank");
         }

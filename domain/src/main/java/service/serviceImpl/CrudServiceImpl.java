@@ -1,19 +1,20 @@
 package service.serviceImpl;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 import service.CrudService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class CrudServiceImpl<M, E, ID> implements CrudService<M, ID> {
 
-    private final JpaRepository<E, ID> repository;
+    private final CrudRepository<E, ID> repository;
     private final Function<E, M> toModel;
     private final Function<M, E> toEntity;
 
-    protected CrudServiceImpl(JpaRepository<E, ID> repository, Function<E, M> toModel, Function<M, E> toEntity) {
+    protected CrudServiceImpl(CrudRepository<E, ID> repository, Function<E, M> toModel, Function<M, E> toEntity) {
         this.repository = repository;
         this.toModel = toModel;
         this.toEntity = toEntity;
@@ -21,7 +22,9 @@ public abstract class CrudServiceImpl<M, E, ID> implements CrudService<M, ID> {
 
     @Override
     public List<M> findAll() {
-        return repository.findAll().stream().map(toModel).toList();
+        List<M> models = new ArrayList<>();
+        repository.findAll().forEach(e -> models.add(toModel.apply(e)));
+        return models;
     }
 
     @Override

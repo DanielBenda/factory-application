@@ -1,10 +1,10 @@
 package service;
 
-import model.Worker;
+import model.WorkerModel;
 
 import java.util.UUID;
 
-public interface WorkerService extends CrudService<Worker, UUID> {
+public interface WorkerService extends CrudService<WorkerModel, UUID> {
 
-    Worker findBySurname(String surname);
+    WorkerModel findBySurname(String surname);
 }

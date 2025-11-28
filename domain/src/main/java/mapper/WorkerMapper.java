@@ -1,13 +1,13 @@
 package mapper;
 
-import entity.WorkerEntity;
-import model.Worker;
+import entity.Worker;
+import model.WorkerModel;
 
-public class WorkerMapper implements EntityMapper<Worker, WorkerEntity> {
+public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
 
     @Override
-    public Worker toModel(WorkerEntity entity) {
-        return Worker.builder()
+    public WorkerModel toModel(Worker entity) {
+        return WorkerModel.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .surname(entity.getSurname())
@@ -16,12 +16,12 @@ public class WorkerMapper implements EntityMapper<Worker, WorkerEntity> {
     }
 
     @Override
-    public WorkerEntity toEntity(Worker model) {
-        WorkerEntity entity = new WorkerEntity();
-        entity.setId(model.id());
-        entity.setName(model.name());
-        entity.setSurname(model.surname());
-        entity.setWorkPosition(model.workPosition());
-        return entity;
+    public Worker toEntity(WorkerModel workerModel) {
+        Worker worker = new Worker();
+        worker.setId(workerModel.id());
+        worker.setName(workerModel.name());
+        worker.setSurname(workerModel.surname());
+        worker.setWorkPosition(workerModel.workPosition());
+        return worker;
     }
 }

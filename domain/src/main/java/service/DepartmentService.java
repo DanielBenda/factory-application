@@ -1,8 +1,8 @@
 package service;
 
-import model.Department;
+import model.DepartmentModel;
 
 import java.util.UUID;
 
-public interface DepartmentService extends CrudService<Department, UUID> {
+public interface DepartmentService extends CrudService<DepartmentModel, UUID> {
 }

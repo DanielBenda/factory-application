@@ -18,7 +18,6 @@
             <groupId>my.projects</groupId>
             <artifactId>graphql-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- Základní Spring Boot starter -->
