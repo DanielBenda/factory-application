@@ -4,9 +4,20 @@ import my.projects.factory.persistence.entity.Worker;
 import my.projects.factory.domain.model.WorkerModel;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper for converting between {@link Worker} entity and {@link WorkerModel} domain model.
+ * <p>
+ * Provides methods to transform data from database entities to domain models and vice versa.
+ */
 @Component
 public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
 
+    /**
+     * Converts a {@link Worker} entity to a {@link WorkerModel}.
+     *
+     * @param entity the {@code Worker} entity to convert; must not be null
+     * @return the corresponding {@code WorkerModel} with id, name, surname and workPosition set
+     */
     @Override
     public WorkerModel toModel(Worker entity) {
         return WorkerModel.builder()
@@ -17,6 +28,12 @@ public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
                 .build();
     }
 
+    /**
+     * Converts a {@link WorkerModel} to a {@link Worker} entity.
+     *
+     * @param workerModel the {@code WorkerModel} to convert; must not be null
+     * @return a {@code Worker} entity with id, name, surname and workPosition set
+     */
     @Override
     public Worker toEntity(WorkerModel workerModel) {
         Worker worker = new Worker();

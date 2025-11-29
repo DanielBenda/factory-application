@@ -11,15 +11,31 @@ import my.projects.factory.domain.service.WorkerService;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * GraphQL resolver for operations on Worker entities.
+ * <p>
+ * Provides queries and mutations for fetching, creating, and deleting workers.
+ * Converts between {@link WorkerModel} and {@link GqlWorker} objects.
+ */
 @Controller
 public class WorkerResolver {
 
     private final WorkerService workerService;
 
+    /**
+     * Constructor.
+     *
+     * @param workerService the service providing business logic for workers
+     */
     public WorkerResolver(WorkerService workerService) {
         this.workerService = workerService;
     }
 
+    /**
+     * Returns all workers.
+     *
+     * @return list of all workers as {@link GqlWorker} objects
+     */
     @QueryMapping(name = "workers")
     public List<GqlWorker> workers() {
         return workerService.findAll()
@@ -28,6 +44,13 @@ public class WorkerResolver {
                 .toList();
     }
 
+    /**
+     * Returns a single worker by ID.
+     *
+     * @param id the UUID of the worker
+     * @return the worker as a {@link GqlWorker} object
+     * @throws RuntimeException if the worker is not found
+     */
     @QueryMapping
     public GqlWorker workerById(@Argument UUID id) {
         return workerService.findById(id)
@@ -35,12 +58,20 @@ public class WorkerResolver {
                 .orElseThrow(() -> new RuntimeException("Worker not found: " + id));
     }
 
+    /**
+     * Creates a new worker.
+     *
+     * @param name       the first name of the worker
+     * @param surname    the surname of the worker
+     * @param department the department name
+     * @param position   the worker's position
+     * @return the created worker as {@link GqlWorker}
+     */
     @MutationMapping
     public GqlWorker createWorker(@Argument String name,
                                   @Argument String surname,
                                   @Argument String department,
                                   @Argument String position) {
-        // TODO: add departmentId handling
         WorkerModel worker = WorkerModel.builder()
                 .id(UUID.randomUUID())
                 .name(name)
@@ -52,12 +83,24 @@ public class WorkerResolver {
         return toGql(created);
     }
 
+    /**
+     * Deletes a worker by ID.
+     *
+     * @param id the UUID of the worker to delete
+     * @return true if deletion was successful
+     */
     @MutationMapping
     public Boolean deleteWorker(@Argument UUID id) {
         workerService.delete(id);
         return true;
     }
 
+    /**
+     * Converts a {@link WorkerModel} to a {@link GqlWorker}.
+     *
+     * @param model the WorkerModel to convert
+     * @return the corresponding GqlWorker, or null if input is null
+     */
     private GqlWorker toGql(WorkerModel model) {
         if (model == null) {
             return null;
@@ -71,6 +114,12 @@ public class WorkerResolver {
                 .build();
     }
 
+    /**
+     * Converts a {@link GqlWorker} to a {@link WorkerModel}.
+     *
+     * @param gql the GqlWorker to convert
+     * @return the corresponding WorkerModel, or null if input is null
+     */
     private WorkerModel fromGql(GqlWorker gql) {
         if (gql == null) {
             return null;

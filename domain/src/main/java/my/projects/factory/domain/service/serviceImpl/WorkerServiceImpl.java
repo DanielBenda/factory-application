@@ -9,6 +9,11 @@ import my.projects.factory.domain.service.WorkerService;
 
 import java.util.UUID;
 
+/**
+ * Implementation of {@link WorkerService} that handles business logic
+ * for Worker entities. Uses {@link WorkerMapper} to convert between
+ * {@link Worker} entities and {@link WorkerModel} domain models.
+ */
 @Service
 public class WorkerServiceImpl
         extends CrudServiceImpl<WorkerModel, Worker, UUID>
@@ -30,6 +35,3 @@ public class WorkerServiceImpl
                 .orElse(null);
     }
 }
-
-
-
