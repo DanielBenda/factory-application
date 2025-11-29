@@ -1,89 +1,50 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
+
+	<!-- 🔥 TOTO JE ZÁKLAD – MUSÍŠ HO MÍT -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.5</version>
+		<relativePath/>
+	</parent>
 
 	<groupId>my.projects</groupId>
 	<artifactId>factory</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<properties>
-		<java.version>21</java.version>
-		<spring.version>3.5.5</spring.version>
-		<postgresql.version>42.7.7</postgresql.version>
-		<lombok.version>1.18.38</lombok.version>
-		<graphql.version>7.0.3</graphql.version>
-		<spring-webflux.version>6.2.10</spring-webflux.version>
-
-		<spring-boot-starter-graphql.version>3.5.5</spring-boot-starter-graphql.version>
-		<graphql-java-codegen.version>5.10.0</graphql-java-codegen.version>
-		<build-helper.version>3.6.1</build-helper.version>
-		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-		<spring-boot-maven-plugin.version>3.5.5</spring-boot-maven-plugin.version>
-
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-autoconfigure</artifactId>
-			<version>3.5.5</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.12.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-
 	<modules>
 		<module>persistence</module>
 		<module>domain</module>
-		<module>graphql-api</module>
+		<module>graphql</module>
 		<module>application</module>
 	</modules>
 
+	<properties>
+		<java.version>21</java.version>
+	</properties>
+
+	<!-- 🔥 Dependency management NEPOTŘEBUJE ručně řídit Spring verze -->
 	<dependencyManagement>
 		<dependencies>
-			<!-- Spring Boot starters -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-web</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-jpa</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-security</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<!-- Test dependencies -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-test</artifactId>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-test</artifactId>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${lombok.version}</version>
-			</dependency>
+			<!-- pokud chceš nějaký vlastní BOM, můžeš sem (třeba GraphQL) -->
 		</dependencies>
 	</dependencyManagement>
+
+	<dependencies>
+		<!-- NIKDO NEPÍŠE spring-boot-autoconfigure ručně! -->
+
+		<!-- Testy -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<pluginManagement>
@@ -91,33 +52,11 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.14.0</version>
-					<configuration>
-						<source>${java.version}</source>
-						<target>${java.version}</target>
-						<release>${java.version}</release>
-						<annotationProcessorPaths>
-							<path>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-								<version>${lombok.version}</version>
-							</path>
-						</annotationProcessorPaths>
-					</configuration>
 				</plugin>
 
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring.version}</version>
-					<configuration>
-						<excludes>
-							<exclude>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-							</exclude>
-						</excludes>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
