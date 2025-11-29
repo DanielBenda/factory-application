@@ -1,0 +1,17 @@
+type Worker {
+    id: UUID!
+    name: String!
+    surname: String!
+    department: String
+    workPosition: String!
+}
+
+type Query {
+    workers: [Worker!]!
+    workerById(id: UUID!): Worker
+}
+
+type Mutation {
+    createWorker(name: String!, surname: String!, department: String, position: String!): Worker!
+    deleteWorker(id: UUID!): Boolean!
+}
