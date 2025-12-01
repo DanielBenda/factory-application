@@ -1,12 +1,14 @@
 package my.projects.factory.graphql.resolver;
 
 import my.projects.factory.domain.model.WorkerModel;
+import my.projects.factory.domain.service.WorkerService;
+import my.projects.factory.generated.GqlCreateWorkerInput;
+import my.projects.factory.generated.GqlUpdateWorkerInput;
 import my.projects.factory.generated.GqlWorker;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
-import my.projects.factory.domain.service.WorkerService;
 
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +53,7 @@ public class WorkerResolver {
      * @return the worker as a {@link GqlWorker} object
      * @throws RuntimeException if the worker is not found
      */
-    @QueryMapping
+    @QueryMapping(name = "worker")
     public GqlWorker workerById(@Argument UUID id) {
         return workerService.findById(id)
                 .map(this::toGql)
@@ -61,23 +63,17 @@ public class WorkerResolver {
     /**
      * Creates a new worker.
      *
-     * @param name       the first name of the worker
-     * @param surname    the surname of the worker
-     * @param department the department name
-     * @param position   the worker's position
+     * @param input with parameters for creating a worker
      * @return the created worker as {@link GqlWorker}
      */
     @MutationMapping
-    public GqlWorker createWorker(@Argument String name,
-                                  @Argument String surname,
-                                  @Argument String department,
-                                  @Argument String position) {
+    public GqlWorker createWorker(@Argument GqlCreateWorkerInput input) {
         WorkerModel worker = WorkerModel.builder()
                 .id(UUID.randomUUID())
-                .name(name)
-                .surname(surname)
-                .department(department)
-                .workPosition(position)
+                .name(input.getName())
+                .surname(input.getSurname())
+                .department(input.getDepartment())
+                .workPosition(input.getWorkPosition())
                 .build();
         WorkerModel created = workerService.create(worker);
         return toGql(created);
@@ -96,6 +92,37 @@ public class WorkerResolver {
     }
 
     /**
+     * Updates an existing worker.
+     * <p>
+     * Fetches the current worker by ID, applies only non-null fields from the
+     * GraphQL input (PATCH-style update), and forwards the updated domain model
+     * to the service layer. Returns the updated worker as a GraphQL type.
+     *
+     * @param id    the UUID of the worker to update
+     * @param input the fields to update (nullable values are ignored)
+     * @return the updated worker in GraphQL representation
+     * @throws RuntimeException if the worker with the given ID does not exist
+     */
+    @MutationMapping
+    public GqlWorker updateWorker(@Argument UUID id, @Argument GqlUpdateWorkerInput input) {
+
+        WorkerModel existing = workerService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Worker not found: " + id));
+
+        WorkerModel updatedWorker = WorkerModel.builder()
+                .id(existing.id())
+                .name(input.getName() != null ? input.getName() : existing.name())
+                .surname(input.getSurname() != null ? input.getSurname() : existing.surname())
+                .department(input.getDepartment() != null ? input.getDepartment() : existing.department())
+                .workPosition(input.getWorkPosition() != null ? input.getWorkPosition() : existing.workPosition())
+                .build();
+
+        WorkerModel saved = workerService.update(id, updatedWorker);
+
+        return toGql(saved);
+    }
+
+    /**
      * Converts a {@link WorkerModel} to a {@link GqlWorker}.
      *
      * @param model the WorkerModel to convert
@@ -111,25 +138,6 @@ public class WorkerResolver {
                 .withSurname(model.surname())
                 .withDepartment(model.department())
                 .withWorkPosition(model.workPosition())
-                .build();
-    }
-
-    /**
-     * Converts a {@link GqlWorker} to a {@link WorkerModel}.
-     *
-     * @param gql the GqlWorker to convert
-     * @return the corresponding WorkerModel, or null if input is null
-     */
-    private WorkerModel fromGql(GqlWorker gql) {
-        if (gql == null) {
-            return null;
-        }
-        return WorkerModel.builder()
-                .id(gql.getId())
-                .name(gql.getName())
-                .surname(gql.getSurname())
-                .department(gql.getDepartment())
-                .workPosition(gql.getWorkPosition())
                 .build();
     }
 }

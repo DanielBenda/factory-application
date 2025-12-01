@@ -6,6 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/**
+ * Repository interface for accessing {@link Department} entities in the database.
+ * <p>
+ * Provides basic CRUD operations through {@link CrudRepository} and
+ */
 @Repository
 public interface DepartmentRepository extends CrudRepository<Department, UUID> {
 }

@@ -1,0 +1,29 @@
+type Department {
+    id: UUID!
+    code: String!
+    leader: String
+    name: String!
+}
+
+extend type Query {
+    departments: [Department!]!
+    department(id: UUID): Department
+}
+
+extend type Mutation {
+    createDepartment(input: CreateDepartmentInput!): Department!
+    updateDepartment(id: UUID!, input: UpdateDepartmentInput!): Department!
+    deleteDepartment(id: UUID!): Boolean!
+}
+
+input CreateDepartmentInput {
+    code: String!
+    leader: String
+    name: String!
+}
+
+input UpdateDepartmentInput {
+    code: String!
+    leader: String
+    name: String!
+}
