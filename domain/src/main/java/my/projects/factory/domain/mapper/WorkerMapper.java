@@ -15,16 +15,17 @@ public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
     /**
      * Converts a {@link Worker} entity to a {@link WorkerModel}.
      *
-     * @param entity the {@code Worker} entity to convert; must not be null
-     * @return the corresponding {@code WorkerModel} with id, name, surname and workPosition set
+     * @param worker the {@code Worker} entity to convert; must not be null
+     * @return the corresponding {@code WorkerModel} with id, name, department, surname and workPosition set
      */
     @Override
-    public WorkerModel toModel(Worker entity) {
+    public WorkerModel toModel(Worker worker) {
         return WorkerModel.builder()
-                .id(entity.getId())
-                .name(entity.getName())
-                .surname(entity.getSurname())
-                .workPosition(entity.getWorkPosition())
+                .id(worker.getId())
+                .name(worker.getName())
+                .department(worker.getDepartmentId().getName())
+                .surname(worker.getSurname())
+                .workPosition(worker.getWorkPosition())
                 .build();
     }
 

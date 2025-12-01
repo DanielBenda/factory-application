@@ -47,7 +47,7 @@ public class Worker implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = WorkerSchema.DEPARTMENT, nullable = false)
-    private Department department;
+    private Department departmentId;
 
     @Column(name = WorkerSchema.WORK_POSITION, length = 100)
     private String workPosition;

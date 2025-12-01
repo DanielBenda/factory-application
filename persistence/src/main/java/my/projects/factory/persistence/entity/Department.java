@@ -4,29 +4,32 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Data;
+import my.projects.factory.persistence.schema.DepartmentSchema;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @Entity
-@Table(name = "t_department", schema = "factory")
-public class Department {
+@Table(name = DepartmentSchema.TABLE, schema = DepartmentSchema.SCHEMA)
+public class Department implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 4788014246625317298L;
+
     @Id
-    @ColumnDefault("gen_random_uuid()")
-    @Column(name = "id", nullable = false)
+    @Column(name = DepartmentSchema.ID, nullable = false)
     private UUID id;
 
-    @Column(name = "code", nullable = false, length = 50)
+    @Column(name = DepartmentSchema.CODE, nullable = false, length = 50)
     private String code;
 
-    @Column(name = "leader", length = 100)
+    @Column(name = DepartmentSchema.LEADER, length = 100)
     private String leader;
 
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = DepartmentSchema.NAME, nullable = false, length = 100)
     private String name;
 
 }

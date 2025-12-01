@@ -6,12 +6,27 @@ type Worker {
     workPosition: String!
 }
 
-type Query {
+extend type Query {
     workers: [Worker!]!
-    workerById(id: UUID!): Worker
+    worker(id: UUID!): Worker
 }
 
-type Mutation {
-    createWorker(name: String!, surname: String!, department: String, position: String!): Worker!
+extend type Mutation {
+    createWorker(input: CreateWorkerInput!): Worker!
+    updateWorker(id: UUID!, input: UpdateWorkerInput!): Worker!
     deleteWorker(id: UUID!): Boolean!
+}
+
+input CreateWorkerInput {
+    name: String!
+    surname: String!
+    department: String
+    workPosition: String!
+}
+
+input UpdateWorkerInput {
+    name: String
+    surname: String
+    department: String
+    workPosition: String
 }
