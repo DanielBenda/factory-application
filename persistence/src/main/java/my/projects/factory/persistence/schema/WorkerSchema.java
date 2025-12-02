@@ -12,7 +12,7 @@ public class WorkerSchema {
     public static final String ID = "id";
     public static final String NAME = "name";
     public static final String SURNAME = "surname";
-    public static final String DEPARTMENT = "department";
+    public static final String DEPARTMENT = "department_id";
     public static final String WORK_POSITION = "work_position";
 
     private WorkerSchema() {}
