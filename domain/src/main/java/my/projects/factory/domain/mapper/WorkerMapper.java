@@ -1,9 +1,7 @@
 package my.projects.factory.domain.mapper;
 
-import my.projects.factory.persistence.entity.Department;
 import my.projects.factory.persistence.entity.Worker;
 import my.projects.factory.domain.model.WorkerModel;
-import my.projects.factory.persistence.repository.DepartmentRepository;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,12 +11,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
-
-    private final DepartmentRepository departmentRepository;
-
-    public WorkerMapper(DepartmentRepository departmentRepository) {
-        this.departmentRepository = departmentRepository;
-    }
 
     /**
      * Converts a {@link Worker} entity to a {@link WorkerModel}.
@@ -30,12 +22,9 @@ public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
     public WorkerModel toModel(Worker worker) {
         return WorkerModel.builder()
                 .id(worker.getId())
-                .created(worker.getCreated())
-                .createdBy(worker.getCreatedBy())
-                .department(worker.getDepartmentId().getName())
                 .name(worker.getName())
+                .department(worker.getDepartmentId().getName())
                 .surname(worker.getSurname())
-                .systemRole(worker.getSystemRole())
                 .workPosition(worker.getWorkPosition())
                 .build();
     }
@@ -50,24 +39,9 @@ public class WorkerMapper implements EntityMapper<WorkerModel, Worker> {
     public Worker toEntity(WorkerModel workerModel) {
         Worker worker = new Worker();
         worker.setId(workerModel.id());
-        worker.setCreated(workerModel.created());
-        worker.setCreatedBy(workerModel.createdBy());
-        worker.setDepartmentId(resolveDepartment(workerModel.department()));
         worker.setName(workerModel.name());
         worker.setSurname(workerModel.surname());
-        worker.setSystemRole(workerModel.systemRole());
         worker.setWorkPosition(workerModel.workPosition());
         return worker;
-    }
-
-    /**
-     * Converts department id (string) from model to Department entity.
-     */
-    private Department resolveDepartment(String departmentId) {
-        return RepositoryFinder.resolveById(
-                departmentId,
-                departmentRepository,
-                "Department"
-        );
     }
 }

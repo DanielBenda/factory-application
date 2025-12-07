@@ -1,12 +1,9 @@
 type Worker {
     id: UUID!
-    created: Date!
-    createdBy: String!
-    department: String!
     name: String!
     surname: String!
-    systemRole: String!
-    workPosition: String
+    department: String
+    workPosition: String!
 }
 
 extend type Query {
@@ -21,17 +18,15 @@ extend type Mutation {
 }
 
 input CreateWorkerInput {
-    department: String!
     name: String!
     surname: String!
-    systemRole: String!
-    workPosition: String
+    department: String
+    workPosition: String!
 }
 
 input UpdateWorkerInput {
-    department: String!
-    name: String!
-    surname: String!
-    systemRole: String!
+    name: String
+    surname: String
+    department: String
     workPosition: String
 }
