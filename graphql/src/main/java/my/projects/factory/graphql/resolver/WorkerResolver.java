@@ -70,9 +70,10 @@ public class WorkerResolver {
     public GqlWorker createWorker(@Argument GqlCreateWorkerInput input) {
         WorkerModel worker = WorkerModel.builder()
                 .id(UUID.randomUUID())
+                .department(input.getDepartment())
                 .name(input.getName())
                 .surname(input.getSurname())
-                .department(input.getDepartment())
+                .systemRole(input.getSystemRole())
                 .workPosition(input.getWorkPosition())
                 .build();
         WorkerModel created = workerService.create(worker);
@@ -111,9 +112,10 @@ public class WorkerResolver {
 
         WorkerModel updatedWorker = WorkerModel.builder()
                 .id(existing.id())
+                .department(input.getDepartment() != null ? input.getDepartment() : existing.department())
                 .name(input.getName() != null ? input.getName() : existing.name())
                 .surname(input.getSurname() != null ? input.getSurname() : existing.surname())
-                .department(input.getDepartment() != null ? input.getDepartment() : existing.department())
+                .systemRole(input.getSystemRole() != null ? input.getSystemRole() : existing.systemRole())
                 .workPosition(input.getWorkPosition() != null ? input.getWorkPosition() : existing.workPosition())
                 .build();
 
@@ -134,9 +136,12 @@ public class WorkerResolver {
         }
         return GqlWorker.builder()
                 .withId(model.id())
+                .withCreated(model.created())
+                .withCreatedBy(model.createdBy())
+                .withDepartment(model.department())
                 .withName(model.name())
                 .withSurname(model.surname())
-                .withDepartment(model.department())
+                .withSystemRole(model.systemRole())
                 .withWorkPosition(model.workPosition())
                 .build();
     }
