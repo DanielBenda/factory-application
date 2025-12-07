@@ -33,14 +33,15 @@ CREATE TABLE factory.t_department
 
 CREATE TABLE factory.t_worker
 (
-    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id	          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created       DATE NOT NULL,
+    created_by    VARCHAR(100) NOT NULL,
+    department_id UUID         NOT NULL,
     name          VARCHAR(100) NOT NULL,
     surname       VARCHAR(100) NOT NULL,
-    department_id UUID         NOT NULL,
+    system_role   VARCHAR(50) NOT NULL,
     work_position VARCHAR(100),
-    system_role   VARCHAR(50),
-    created_by    VARCHAR(100),
-    created       DATE,
+
     FOREIGN KEY (department_id) REFERENCES factory.t_department (id) ON DELETE CASCADE
 );
 

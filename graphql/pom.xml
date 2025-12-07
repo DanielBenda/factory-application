@@ -105,6 +105,13 @@
                                         my.projects.factory.graphql.scalars.UUIDScalar.UUID
                                     </graphQLScalarTypeStaticField>
                                 </customScalar>
+                                <customScalar>
+                                    <graphQLTypeName>Date</graphQLTypeName>
+                                    <javaType>java.util.Date</javaType>
+                                    <graphQLScalarTypeStaticField>
+                                        my.projects.factory.graphql.scalars.DateScalar.Date
+                                    </graphQLScalarTypeStaticField>
+                                </customScalar>
                             </customScalars>
                         </configuration>
                     </execution>
