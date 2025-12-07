@@ -14,6 +14,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -38,16 +39,25 @@ public class Worker implements Serializable {
     @Column(name = WorkerSchema.ID, nullable = false)
     private UUID id;
 
+    @Column(name = WorkerSchema.CREATED, nullable = false)
+    private Date created;
+
+    @Column(name = WorkerSchema.CREATED_BY, nullable = false, length = 100)
+    private String createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = WorkerSchema.DEPARTMENT, nullable = false)
+    private Department departmentId;
+
     @Column(name = WorkerSchema.NAME, nullable = false, length = 100)
     private String name;
 
     @Column(name = WorkerSchema.SURNAME, nullable = false, length = 100)
     private String surname;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = WorkerSchema.DEPARTMENT, nullable = false)
-    private Department departmentId;
+    @Column(name = WorkerSchema.SYSTEM_ROLE, nullable = false, length = 100)
+    private String systemRole;
 
     @Column(name = WorkerSchema.WORK_POSITION, length = 100)
     private String workPosition;
