@@ -69,7 +69,6 @@ public class WorkerResolver {
     @MutationMapping
     public GqlWorker createWorker(@Argument GqlCreateWorkerInput input) {
         WorkerModel worker = WorkerModel.builder()
-                .id(UUID.randomUUID())
                 .department(input.getDepartment())
                 .name(input.getName())
                 .surname(input.getSurname())

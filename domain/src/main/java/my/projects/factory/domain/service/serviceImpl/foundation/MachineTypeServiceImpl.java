@@ -4,8 +4,8 @@ import my.projects.factory.domain.mapper.foundation.MachineTypeMapper;
 import my.projects.factory.domain.model.foundation.MachineTypeModel;
 import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
-import my.projects.factory.persistence.entity.MachineType;
-import my.projects.factory.persistence.repository.MachineTypeRepository;
+import my.projects.factory.persistence.entity.foundation.MachineType;
+import my.projects.factory.persistence.repository.foundation.MachineTypeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

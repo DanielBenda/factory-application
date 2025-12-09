@@ -2,7 +2,7 @@ package my.projects.factory.domain.mapper.foundation;
 
 import my.projects.factory.domain.mapper.EntityMapper;
 import my.projects.factory.domain.model.foundation.MachineTypeModel;
-import my.projects.factory.persistence.entity.MachineType;
+import my.projects.factory.persistence.entity.foundation.MachineType;
 import org.springframework.stereotype.Component;
 
 /**

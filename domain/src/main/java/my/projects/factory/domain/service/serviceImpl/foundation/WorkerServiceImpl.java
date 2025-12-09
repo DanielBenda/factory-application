@@ -1,11 +1,11 @@
 package my.projects.factory.domain.service.serviceImpl.foundation;
 
 import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
-import my.projects.factory.persistence.entity.Worker;
+import my.projects.factory.persistence.entity.foundation.Worker;
 import my.projects.factory.domain.mapper.foundation.WorkerMapper;
 import my.projects.factory.domain.model.foundation.WorkerModel;
 import org.springframework.stereotype.Service;
-import my.projects.factory.persistence.repository.WorkerRepository;
+import my.projects.factory.persistence.repository.foundation.WorkerRepository;
 import my.projects.factory.domain.service.foundation.WorkerService;
 
 import java.util.UUID;
