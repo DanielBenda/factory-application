@@ -13,6 +13,12 @@ import org.springframework.stereotype.Controller;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * GraphQL resolver for operations on Department entities.
+ * <p>
+ * Provides queries and mutations for fetching, creating, and deleting departments.
+ * Converts between {@link DepartmentModel} and {@link GqlDepartment} objects.
+ */
 @Controller
 public class DepartmentResolver {
 

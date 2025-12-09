@@ -7,20 +7,21 @@ import lombok.Builder;
 import java.util.UUID;
 
 /**
- * Domain model representing a department.
+ * Domain model representing a machine type.
  * <p>
  * This record is used in the business logic and GraphQL API.
  * It is validated to ensure that required fields are not blank.
  *
- * @param id     Unique identifier of the department, must not be null.
- * @param code   Code of the department, must not be blank.
- * @param leader Leader of the department.
- * @param name   Name of the department, must not be blank.
+ * @param id          Unique identifier of the machine type, must not be null.
+ * @param code        Code of the machine type, must not be blank.
+ * @param description Description of the machine type.
+ * @param name        Name of the machine type, must not be blank.
  */
 @Builder
-public record DepartmentModel(@Nonnull UUID id, @Nonnull String code, @Nullable String leader, @Nonnull String name) {
+public record MachineTypeModel(@Nonnull UUID id, @Nonnull String code, @Nullable String description,
+                               @Nonnull String name) {
 
-    public DepartmentModel {
+    public MachineTypeModel {
         if (code.isBlank()) {
             throw new IllegalArgumentException("Code must not be blank");
         }

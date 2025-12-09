@@ -7,14 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
-import my.projects.factory.persistence.schema.DepartmentSchema;
+import my.projects.factory.persistence.schema.MachineTypeSchema;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
 /**
- * Represents a department in the system and maps to the {@code t_department} table in the database factory.
+ * Represents a machine type in the system and maps to the {@code t_machine_type} table in the database factory.
  * <p>
  * This entity is part of the persistence layer and should be used exclusively for database operations.
  * </p>
@@ -25,24 +25,23 @@ import java.util.UUID;
  */
 @Data
 @Entity
-@Table(name = DepartmentSchema.TABLE, schema = DepartmentSchema.SCHEMA)
-public class Department implements Serializable {
+@Table(name = MachineTypeSchema.TABLE, schema = MachineTypeSchema.SCHEMA)
+public class MachineType implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 4788014246625317298L;
+    private static final long serialVersionUID = 6538961630291529068L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = DepartmentSchema.ID, nullable = false)
+    @Column(name = MachineTypeSchema.ID, nullable = false)
     private UUID id;
 
-    @Column(name = DepartmentSchema.CODE, nullable = false, length = 50)
+    @Column(name = MachineTypeSchema.CODE, nullable = false, length = 50)
     private String code;
 
-    @Column(name = DepartmentSchema.LEADER, length = 100)
-    private String leader;
+    @Column(name = MachineTypeSchema.DESCRIPTION, length = Integer.MAX_VALUE)
+    private String description;
 
-    @Column(name = DepartmentSchema.NAME, nullable = false, length = 100)
+    @Column(name = MachineTypeSchema.NAME, nullable = false, length = 100)
     private String name;
-
 }

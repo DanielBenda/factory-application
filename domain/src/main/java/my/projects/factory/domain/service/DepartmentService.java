@@ -6,7 +6,7 @@ import java.util.UUID;
 
 /**
  * Service interface for managing {@link DepartmentModel} entities.
- * Provides basic CRUD operations and a custom method to find a worker by surname.
+ * Provides basic CRUD operations.
  */
 public interface DepartmentService extends CrudService<DepartmentModel, UUID> {
 }
