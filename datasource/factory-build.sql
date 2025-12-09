@@ -73,7 +73,8 @@ CREATE TABLE factory.t_machine_type
 (
     id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code VARCHAR(50) UNIQUE NOT NULL,
-    name VARCHAR(100)
+    description VARCHAR,
+    name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE factory.t_machine
@@ -220,13 +221,15 @@ FROM (VALUES
 
 
 -- Machine types
-INSERT INTO factory.t_machine_type (code, name)
-VALUES ('MT-CNC3', '3-osé CNC'),
-       ('MT-CNC5', '5-osé CNC'),
-       ('MT-LASER', 'Laserová řezačka'),
-       ('MT-MILL', 'Frézka'),
-       ('MT-LATHE', 'Soustruh'),
-       ('MT-GRIND', 'Broušení');
+INSERT INTO factory.t_machine_type (code, description, name)
+VALUES
+    ('MT-CNC3',  '3-osé vertikální CNC centrum vhodné pro sériové obrábění menších a středních dílů.', '3-osé CNC'),
+    ('MT-CNC5',  '5-osé simultánní CNC centrum pro komplexní díly, vysokou přesnost a 1-up obrábění.', '5-osé CNC'),
+    ('MT-LASER', 'Laserová řezačka pro přesné dělení plechu a profilů s vysokou rychlostí.', 'Laserová řezačka'),
+    ('MT-MILL',  'Klasická nebo CNC frézka pro obrábění rovných ploch, kapes a tvarových prvků.', 'Frézka'),
+    ('MT-LATHE', 'CNC soustruh určený pro rotační díly, hřídele a pouzdra.', 'Soustruh'),
+    ('MT-GRIND', 'Bruska pro finální obrábění povrchů s velmi vysokou přesností.', 'Broušení');
+
 
 -- Machines (10 machines)
 INSERT INTO factory.t_machine (machine_type_id, code, name, year)
@@ -312,3 +315,4 @@ FROM factory.t_work_order wo
          JOIN factory.t_worker w ON w.work_position LIKE '%operátor%'
          JOIN factory.t_machine m ON m.id IS NOT NULL
 LIMIT 200;
+
