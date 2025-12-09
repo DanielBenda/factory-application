@@ -1,8 +1,9 @@
-package my.projects.factory.domain.service.serviceImpl;
+package my.projects.factory.domain.service.serviceImpl.foundation;
 
-import my.projects.factory.domain.mapper.MachineTypeMapper;
-import my.projects.factory.domain.model.MachineTypeModel;
-import my.projects.factory.domain.service.MachineTypeService;
+import my.projects.factory.domain.mapper.foundation.MachineTypeMapper;
+import my.projects.factory.domain.model.foundation.MachineTypeModel;
+import my.projects.factory.domain.service.foundation.MachineTypeService;
+import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
 import my.projects.factory.persistence.entity.MachineType;
 import my.projects.factory.persistence.repository.MachineTypeRepository;
 import org.springframework.stereotype.Service;

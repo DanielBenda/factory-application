@@ -1,8 +1,9 @@
-package my.projects.factory.domain.service.serviceImpl;
+package my.projects.factory.domain.service.serviceImpl.foundation;
 
-import my.projects.factory.domain.mapper.DepartmentMapper;
-import my.projects.factory.domain.model.DepartmentModel;
-import my.projects.factory.domain.service.DepartmentService;
+import my.projects.factory.domain.mapper.foundation.DepartmentMapper;
+import my.projects.factory.domain.model.foundation.DepartmentModel;
+import my.projects.factory.domain.service.foundation.DepartmentService;
+import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
 import my.projects.factory.persistence.entity.Department;
 import my.projects.factory.persistence.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;

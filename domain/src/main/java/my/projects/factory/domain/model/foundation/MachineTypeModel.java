@@ -1,4 +1,4 @@
-package my.projects.factory.domain.model;
+package my.projects.factory.domain.model.foundation;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;

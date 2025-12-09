@@ -1,7 +1,7 @@
-package my.projects.factory.graphql.resolver;
+package my.projects.factory.graphql.resolver.foundation;
 
-import my.projects.factory.domain.model.DepartmentModel;
-import my.projects.factory.domain.service.DepartmentService;
+import my.projects.factory.domain.model.foundation.DepartmentModel;
+import my.projects.factory.domain.service.foundation.DepartmentService;
 import my.projects.factory.generated.GqlCreateDepartmentInput;
 import my.projects.factory.generated.GqlDepartment;
 import my.projects.factory.generated.GqlUpdateDepartmentInput;
