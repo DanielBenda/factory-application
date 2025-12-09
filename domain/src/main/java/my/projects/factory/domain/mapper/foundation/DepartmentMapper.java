@@ -1,6 +1,7 @@
-package my.projects.factory.domain.mapper;
+package my.projects.factory.domain.mapper.foundation;
 
-import my.projects.factory.domain.model.DepartmentModel;
+import my.projects.factory.domain.mapper.EntityMapper;
+import my.projects.factory.domain.model.foundation.DepartmentModel;
 import my.projects.factory.persistence.entity.Department;
 import org.springframework.stereotype.Component;
 

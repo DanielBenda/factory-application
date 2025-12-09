@@ -1,7 +1,7 @@
-package my.projects.factory.graphql.resolver;
+package my.projects.factory.graphql.resolver.foundation;
 
-import my.projects.factory.domain.model.MachineTypeModel;
-import my.projects.factory.domain.service.MachineTypeService;
+import my.projects.factory.domain.model.foundation.MachineTypeModel;
+import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.generated.GqlCreateMachineTypeInput;
 import my.projects.factory.generated.GqlMachineType;
 import my.projects.factory.generated.GqlUpdateMachineTypeInput;

@@ -1,7 +1,7 @@
-package my.projects.factory.graphql.resolver;
+package my.projects.factory.graphql.resolver.foundation;
 
-import my.projects.factory.domain.model.WorkerModel;
-import my.projects.factory.domain.service.WorkerService;
+import my.projects.factory.domain.model.foundation.WorkerModel;
+import my.projects.factory.domain.service.foundation.WorkerService;
 import my.projects.factory.generated.GqlCreateWorkerInput;
 import my.projects.factory.generated.GqlUpdateWorkerInput;
 import my.projects.factory.generated.GqlWorker;

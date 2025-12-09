@@ -1,6 +1,7 @@
-package my.projects.factory.domain.service;
+package my.projects.factory.domain.service.foundation;
 
-import my.projects.factory.domain.model.MachineTypeModel;
+import my.projects.factory.domain.model.foundation.MachineTypeModel;
+import my.projects.factory.domain.service.CrudService;
 
 import java.util.UUID;
 
