@@ -48,8 +48,11 @@ CREATE TABLE factory.t_worker
 CREATE TABLE factory.t_product_type
 (
     id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL,
-    code VARCHAR(50)  NOT NULL UNIQUE
+    code        VARCHAR(50)  NOT NULL UNIQUE,
+    created     TIMESTAMP    NOT NULL,
+    created_by  VARCHAR(50)  NOT NULL,
+    description VARCHAR,
+    name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE factory.t_part
@@ -240,12 +243,14 @@ ORDER BY mt.id
 LIMIT 10;
 
 -- Product types
-INSERT INTO factory.t_product_type (name, code)
-VALUES ('Hydraulické čerpadlo', 'PT-HPUMP'),
-       ('Převodovka', 'PT-GEARBOX'),
-       ('Brzdový systém', 'PT-BRAKE'),
-       ('Turbína', 'PT-TURB'),
-       ('Pístová jednotka', 'PT-PISTON');
+INSERT INTO factory.t_product_type (code, created, created_by, description, name)
+VALUES
+    ('PT-HPUMP',   NOW(), 'ADMIN', 'Hydraulické čerpadlo pro průmyslové použití.', 'Hydraulické čerpadlo'),
+    ('PT-GEARBOX', NOW(), 'ADMIN', 'Převodová jednotka s přesným obráběním.', 'Převodovka'),
+    ('PT-BRAKE',   NOW(), 'ADMIN', 'Modul brzdového systému s vysokou spolehlivostí.', 'Brzdový systém'),
+    ('PT-TURB',    NOW(), 'ADMIN', 'Turbínové těleso pro vysokootáčkové aplikace.', 'Turbína'),
+    ('PT-PISTON',  NOW(), 'ADMIN', 'Pístová jednotka určená pro tlakové agregáty.', 'Pístová jednotka');
+
 
 -- Parts (20 pcs using cycle)
 INSERT INTO factory.t_part (name, code, material)

@@ -1,6 +1,6 @@
-package my.projects.factory.persistence.repository;
+package my.projects.factory.persistence.repository.foundation;
 
-import my.projects.factory.persistence.entity.Department;
+import my.projects.factory.persistence.entity.foundation.Department;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

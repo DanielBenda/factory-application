@@ -25,7 +25,7 @@ public record DepartmentModel(@Nonnull UUID id, @Nonnull String code, @Nullable 
             throw new IllegalArgumentException("Code must not be blank");
         }
         if (name.isBlank()) {
-            throw new IllegalArgumentException("Name name must not be blank");
+            throw new IllegalArgumentException("Name of department must not be blank");
         }
     }
 }

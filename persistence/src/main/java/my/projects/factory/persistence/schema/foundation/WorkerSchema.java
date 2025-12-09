@@ -1,4 +1,4 @@
-package my.projects.factory.persistence.schema;
+package my.projects.factory.persistence.schema.foundation;
 
 /**
  * Database schema constants for the {@code t_worker} table.

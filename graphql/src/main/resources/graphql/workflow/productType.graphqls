@@ -1,0 +1,31 @@
+type ProductType {
+    id: UUID!
+    code: String!
+    created: Date!
+    createdBy: String!
+    description: String
+    name: String!
+}
+
+extend type Query {
+    productTypes: [ProductType!]!
+    productType(id: UUID!): ProductType
+}
+
+extend type Mutation {
+    createProductType(input: CreateProductTypeInput!): ProductType!
+    updateProductType(id: UUID!, input: UpdateProductTypeInput!): ProductType!
+    deleteProductType(id: UUID!): Boolean!
+}
+
+input CreateProductTypeInput {
+    code: String!
+    description: String
+    name: String!
+}
+
+input UpdateProductTypeInput {
+    code: String!
+    description: String
+    name: String!
+}

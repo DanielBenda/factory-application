@@ -1,4 +1,4 @@
-package my.projects.factory.persistence.entity;
+package my.projects.factory.persistence.entity.foundation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
-import my.projects.factory.persistence.schema.MachineTypeSchema;
+import my.projects.factory.persistence.schema.foundation.MachineTypeSchema;
 
 import java.io.Serial;
 import java.io.Serializable;

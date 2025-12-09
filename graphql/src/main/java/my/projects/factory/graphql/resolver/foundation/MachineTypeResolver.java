@@ -69,7 +69,6 @@ public class MachineTypeResolver {
     @MutationMapping
     public GqlMachineType createMachineType(@Argument GqlCreateMachineTypeInput input) {
         MachineTypeModel machineType = MachineTypeModel.builder()
-                .id(UUID.randomUUID())
                 .code(input.getCode())
                 .description(input.getDescription())
                 .name(input.getName())

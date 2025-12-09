@@ -69,7 +69,6 @@ public class DepartmentResolver {
     @MutationMapping
     public GqlDepartment createDepartment(@Argument GqlCreateDepartmentInput input) {
         DepartmentModel department = DepartmentModel.builder()
-                .id(UUID.randomUUID())
                 .code(input.getCode())
                 .leader(input.getLeader())
                 .name(input.getName())

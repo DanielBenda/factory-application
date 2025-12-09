@@ -1,6 +1,6 @@
-package my.projects.factory.persistence.repository;
+package my.projects.factory.persistence.repository.foundation;
 
-import my.projects.factory.persistence.entity.MachineType;
+import my.projects.factory.persistence.entity.foundation.MachineType;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
