@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS factory;
 ------------------------------------------------------------
 -- DROP ALL TABLES
 ------------------------------------------------------------
-DROP TABLE IF EXISTS factory.t_work_order_operation CASCADE;
+DROP TABLE IF EXISTS factory.t_part_operation CASCADE;
 DROP TABLE IF EXISTS factory.t_operation CASCADE;
 DROP TABLE IF EXISTS factory.t_machine CASCADE;
 DROP TABLE IF EXISTS factory.t_part_machine_type CASCADE;
@@ -20,7 +20,11 @@ DROP TABLE IF EXISTS factory.t_part CASCADE;
 DROP TABLE IF EXISTS factory.t_product_type CASCADE;
 
 ------------------------------------------------------------
--- TABLES
+-- TABLE DEFINITIONS
+------------------------------------------------------------
+
+------------------------------------------------------------
+-- Departments
 ------------------------------------------------------------
 
 CREATE TABLE factory.t_department
@@ -31,38 +35,50 @@ CREATE TABLE factory.t_department
     name   VARCHAR(100) NOT NULL
 );
 
+------------------------------------------------------------
+-- Workers
+------------------------------------------------------------
 CREATE TABLE factory.t_worker
 (
-    id	          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    created       DATE NOT NULL,
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created       DATE         NOT NULL,
     created_by    VARCHAR(100) NOT NULL,
     department_id UUID         NOT NULL,
     name          VARCHAR(100) NOT NULL,
     surname       VARCHAR(100) NOT NULL,
-    system_role   VARCHAR(50) NOT NULL,
+    system_role   VARCHAR(50)  NOT NULL,
     work_position VARCHAR(100),
 
     FOREIGN KEY (department_id) REFERENCES factory.t_department (id) ON DELETE CASCADE
 );
 
+------------------------------------------------------------
+-- Product Types
+------------------------------------------------------------
 CREATE TABLE factory.t_product_type
 (
-    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     code        VARCHAR(50)  NOT NULL UNIQUE,
     created     TIMESTAMP    NOT NULL,
-    created_by  VARCHAR(50)  NOT NULL,
+    created_by  VARCHAR(100) NOT NULL,
     description VARCHAR,
-    name VARCHAR(100) NOT NULL
+    name        VARCHAR(100) NOT NULL
 );
 
+------------------------------------------------------------
+-- Parts
+------------------------------------------------------------
 CREATE TABLE factory.t_part
 (
     id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name     VARCHAR(100) NOT NULL,
     code     VARCHAR(50)  NOT NULL UNIQUE,
-    material VARCHAR(50)  NOT NULL
+    material VARCHAR(50)  NOT NULL,
+    name     VARCHAR(100) NOT NULL
 );
 
+------------------------------------------------------------
+-- Product ↔ Parts (M:N)
+------------------------------------------------------------
 CREATE TABLE factory.t_product_type_parts
 (
     product_type_id UUID NOT NULL,
@@ -72,14 +88,20 @@ CREATE TABLE factory.t_product_type_parts
     FOREIGN KEY (part_id) REFERENCES factory.t_part (id) ON DELETE CASCADE
 );
 
+------------------------------------------------------------
+-- Machine Types
+------------------------------------------------------------
 CREATE TABLE factory.t_machine_type
 (
-    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    code VARCHAR(50) UNIQUE NOT NULL,
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code        VARCHAR(50)  NOT NULL UNIQUE,
     description VARCHAR,
-    name VARCHAR(100) NOT NULL
+    name        VARCHAR(100) NOT NULL
 );
 
+------------------------------------------------------------
+-- Machines
+------------------------------------------------------------
 CREATE TABLE factory.t_machine
 (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -87,9 +109,13 @@ CREATE TABLE factory.t_machine
     code            VARCHAR(50) UNIQUE NOT NULL,
     name            VARCHAR(100),
     year            INT,
+
     FOREIGN KEY (machine_type_id) REFERENCES factory.t_machine_type (id) ON DELETE CASCADE
 );
 
+------------------------------------------------------------
+-- Part ↔ Machine type (M:N)
+------------------------------------------------------------
 CREATE TABLE factory.t_part_machine_type
 (
     part_id         UUID NOT NULL,
@@ -99,58 +125,68 @@ CREATE TABLE factory.t_part_machine_type
     FOREIGN KEY (machine_type_id) REFERENCES factory.t_machine_type (id) ON DELETE CASCADE
 );
 
+------------------------------------------------------------
+-- Work Orders
+------------------------------------------------------------
 CREATE TABLE factory.t_work_order
 (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    code            VARCHAR(50)  NOT NULL,
+    code            VARCHAR(50)  NOT NULL UNIQUE,
     name            VARCHAR(100) NOT NULL,
     description     TEXT,
     state           VARCHAR(50),
+    completedBy     UUID         NOT NULL,
     created         TIMESTAMP,
     created_by      UUID         NOT NULL,
     product_type_id UUID         NOT NULL,
-    FOREIGN KEY (product_type_id) REFERENCES factory.t_product_type (id) ON DELETE RESTRICT,
-    FOREIGN KEY (created_by) REFERENCES factory.t_worker (id) ON DELETE RESTRICT
+
+    FOREIGN KEY (created_by) REFERENCES factory.t_worker (id) ON DELETE RESTRICT,
+    FOREIGN KEY (product_type_id) REFERENCES factory.t_product_type (id) ON DELETE RESTRICT
 );
 
+------------------------------------------------------------
+-- Work Orders ↔ Workers (M:N)
+------------------------------------------------------------
 CREATE TABLE factory.t_work_orders_for_worker
 (
     worker_id     UUID NOT NULL,
     work_order_id UUID NOT NULL,
     PRIMARY KEY (worker_id, work_order_id),
+
     FOREIGN KEY (worker_id) REFERENCES factory.t_worker (id) ON DELETE CASCADE,
     FOREIGN KEY (work_order_id) REFERENCES factory.t_work_order (id) ON DELETE CASCADE
 );
 
+------------------------------------------------------------
+-- Operations (independent → NOT tied to work orders anymore)
+------------------------------------------------------------
 CREATE TABLE factory.t_operation
 (
     id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    part_id                UUID         NOT NULL,
-    sequence               INT          NOT NULL,
     name                   VARCHAR(100) NOT NULL,
-    estimated_time_minutes INT,
-    FOREIGN KEY (part_id) REFERENCES factory.t_part (id) ON DELETE CASCADE
+    description            VARCHAR(255),
+    estimated_time_minutes INT
 );
 
-CREATE TABLE factory.t_work_order_operation
+------------------------------------------------------------
+-- Part ↔ Operation (M:N)
+------------------------------------------------------------
+CREATE TABLE factory.t_part_operation
 (
-    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    work_order_id UUID NOT NULL,
-    operation_id  UUID NOT NULL,
-    worker_id     UUID,
-    machine_id    UUID,
-    start_time    TIMESTAMP,
-    end_time      TIMESTAMP,
-    FOREIGN KEY (work_order_id) REFERENCES factory.t_work_order (id) ON DELETE CASCADE,
-    FOREIGN KEY (operation_id) REFERENCES factory.t_operation (id) ON DELETE CASCADE,
-    FOREIGN KEY (worker_id) REFERENCES factory.t_worker (id),
-    FOREIGN KEY (machine_id) REFERENCES factory.t_machine (id)
+    part_id      UUID NOT NULL,
+    operation_id UUID NOT NULL,
+    sequence     INT  NOT NULL,
+
+    PRIMARY KEY (part_id, operation_id),
+    FOREIGN KEY (part_id) REFERENCES factory.t_part (id) ON DELETE CASCADE,
+    FOREIGN KEY (operation_id) REFERENCES factory.t_operation (id) ON DELETE CASCADE
 );
 
 ------------------------------------------------------------
--- TRUNCATE
+-- TRUNCATE ALL
 ------------------------------------------------------------
-TRUNCATE factory.t_work_order_operation,
+TRUNCATE
+    factory.t_part_operation,
     factory.t_operation,
     factory.t_machine,
     factory.t_part_machine_type,
@@ -225,16 +261,14 @@ FROM (VALUES
 
 -- Machine types
 INSERT INTO factory.t_machine_type (code, description, name)
-VALUES
-    ('MT-CNC3',  '3-osé vertikální CNC centrum vhodné pro sériové obrábění menších a středních dílů.', '3-osé CNC'),
-    ('MT-CNC5',  '5-osé simultánní CNC centrum pro komplexní díly, vysokou přesnost a 1-up obrábění.', '5-osé CNC'),
-    ('MT-LASER', 'Laserová řezačka pro přesné dělení plechu a profilů s vysokou rychlostí.', 'Laserová řezačka'),
-    ('MT-MILL',  'Klasická nebo CNC frézka pro obrábění rovných ploch, kapes a tvarových prvků.', 'Frézka'),
-    ('MT-LATHE', 'CNC soustruh určený pro rotační díly, hřídele a pouzdra.', 'Soustruh'),
-    ('MT-GRIND', 'Bruska pro finální obrábění povrchů s velmi vysokou přesností.', 'Broušení');
+VALUES ('MT-CNC3', '3-osé vertikální CNC centrum vhodné pro sériové obrábění menších a středních dílů.', '3-osé CNC'),
+       ('MT-CNC5', '5-osé simultánní CNC centrum pro komplexní díly, vysokou přesnost a 1-up obrábění.', '5-osé CNC'),
+       ('MT-LASER', 'Laserová řezačka pro přesné dělení plechu a profilů s vysokou rychlostí.', 'Laserová řezačka'),
+       ('MT-MILL', 'Klasická nebo CNC frézka pro obrábění rovných ploch, kapes a tvarových prvků.', 'Frézka'),
+       ('MT-LATHE', 'CNC soustruh určený pro rotační díly, hřídele a pouzdra.', 'Soustruh'),
+       ('MT-GRIND', 'Bruska pro finální obrábění povrchů s velmi vysokou přesností.', 'Broušení');
 
-
--- Machines (10 machines)
+-- Machines
 INSERT INTO factory.t_machine (machine_type_id, code, name, year)
 SELECT mt.id, CONCAT('MC-', n), CONCAT(mt.name, ' ', n), (2010 + (n % 10))
 FROM factory.t_machine_type mt
@@ -244,80 +278,33 @@ LIMIT 10;
 
 -- Product types
 INSERT INTO factory.t_product_type (code, created, created_by, description, name)
-VALUES
-    ('PT-HPUMP',   NOW(), 'ADMIN', 'Hydraulické čerpadlo pro průmyslové použití.', 'Hydraulické čerpadlo'),
-    ('PT-GEARBOX', NOW(), 'ADMIN', 'Převodová jednotka s přesným obráběním.', 'Převodovka'),
-    ('PT-BRAKE',   NOW(), 'ADMIN', 'Modul brzdového systému s vysokou spolehlivostí.', 'Brzdový systém'),
-    ('PT-TURB',    NOW(), 'ADMIN', 'Turbínové těleso pro vysokootáčkové aplikace.', 'Turbína'),
-    ('PT-PISTON',  NOW(), 'ADMIN', 'Pístová jednotka určená pro tlakové agregáty.', 'Pístová jednotka');
+VALUES ('PT-HPUMP', NOW(), 'ADMIN', 'Hydraulické čerpadlo pro průmyslové použití.', 'Hydraulické čerpadlo'),
+       ('PT-GEARBOX', NOW(), 'ADMIN', 'Převodová jednotka s přesným obráběním.', 'Převodovka'),
+       ('PT-BRAKE', NOW(), 'ADMIN', 'Modul brzdového systému s vysokou spolehlivostí.', 'Brzdový systém'),
+       ('PT-TURB', NOW(), 'ADMIN', 'Turbínové těleso pro vysokootáčkové aplikace.', 'Turbína'),
+       ('PT-PISTON', NOW(), 'ADMIN', 'Pístová jednotka určená pro tlakové agregáty.', 'Pístová jednotka');
 
+-- Parts
+INSERT INTO factory.t_part (code, material, name)
+SELECT CONCAT('PART-', n),
+       (ARRAY ['Ocel','Hliník','Guma','Titan'])[1 + (n % 4)],
+       CONCAT('Díl ', n)
+FROM generate_series(1, 20) n;
 
--- Parts (20 pcs using cycle)
-INSERT INTO factory.t_part (name, code, material)
-SELECT CONCAT('Díl ', n),
-       CONCAT('PART-', n),
-       (ARRAY ['Ocel', 'Hliník', 'Guma', 'Titan'])[1 + (n % 4)]
-FROM generate_series(1, 20) AS n;
+-- Operations
+INSERT INTO factory.t_operation (name, description, estimated_time_minutes)
+VALUES ('Řezání', 'Hrubé dělení materiálu', 5),
+       ('Frézování', 'Obrábění ploch', 12),
+       ('Soustružení', 'Obrábění rotačních dílů', 10),
+       ('Broušení', 'Finální přesné opracování', 6);
 
--- Part ↔ machine type relations
-INSERT INTO factory.t_part_machine_type (part_id, machine_type_id)
-SELECT p.id, mt.id
+-- Part ↔ Operations
+INSERT INTO factory.t_part_operation (part_id, operation_id, sequence)
+SELECT p.id, o.id, ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY o.id)
 FROM factory.t_part p
-         JOIN factory.t_machine_type mt ON (mt.code IN ('MT-CNC3', 'MT-CNC5', 'MT-LATHE'))
-LIMIT 40;
+         CROSS JOIN factory.t_operation o
+WHERE random() < 0.35;
 
--- Product ↔ parts (random distribution)
-INSERT INTO factory.t_product_type_parts
-SELECT pt.id, p.id
-FROM factory.t_product_type pt
-         CROSS JOIN LATERAL (
-    SELECT id FROM factory.t_part ORDER BY random() LIMIT 4
-    ) p;
-
--- Operations (50 ops)
-INSERT INTO factory.t_operation (part_id, sequence, name, estimated_time_minutes)
-SELECT p.id,
-       gs,
-       CONCAT('Operace ', gs),
-       5 + (gs * 3)
-FROM factory.t_part p
-         CROSS JOIN generate_series(1, 5) AS gs;
-
--- Work orders ST-1…ST-30
-INSERT INTO factory.t_work_order (code, name, description, state, created, created_by, product_type_id)
-SELECT CONCAT('ST-', n),
-       CONCAT('Zakázka ', n),
-       'Automaticky generovaná zakázka',
-       (ARRAY ['Nová','Ve výrobě','Kontrola','Hotovo'])[1 + (n % 4)],
-       NOW() - (n || ' days')::interval,
-       w.id,
-       pt.id
-FROM generate_series(1, 30) AS n
-         JOIN factory.t_worker w ON w.work_position LIKE '%operátor%'
-         JOIN factory.t_product_type pt ON pt.code IN ('PT-HPUMP', 'PT-GEARBOX', 'PT-BRAKE')
-ORDER BY random()
-LIMIT 30;
-
--- Assign workers to work orders
-INSERT INTO factory.t_work_orders_for_worker (worker_id, work_order_id)
-SELECT w.id,
-       wo.id
-FROM factory.t_worker w
-         JOIN factory.t_work_order wo ON wo.id IS NOT NULL
-ORDER BY random()
-LIMIT 60;
-
--- Work order operations (simulate workflow)
-INSERT INTO factory.t_work_order_operation (work_order_id, operation_id, worker_id, machine_id, start_time, end_time)
-SELECT wo.id,
-       o.id,
-       w.id,
-       m.id,
-       NOW() - ((random() * 10)::int || ' hours')::interval,
-       NOW() - ((random() * 5)::int || ' hours')::interval
-FROM factory.t_work_order wo
-         JOIN factory.t_operation o ON random() < 0.2
-         JOIN factory.t_worker w ON w.work_position LIKE '%operátor%'
-         JOIN factory.t_machine m ON m.id IS NOT NULL
-LIMIT 200;
-
+------------------------------------------------------------
+-- DONE
+------------------------------------------------------------

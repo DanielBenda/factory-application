@@ -20,7 +20,7 @@ import java.util.UUID;
  * </p>
  * <p>
  * The entity implements {@link Serializable} to allow safe serialization in distributed systems
- * or caching frameworks.
+ * or caching frameworks.-
  * </p>
  */
 @Data
