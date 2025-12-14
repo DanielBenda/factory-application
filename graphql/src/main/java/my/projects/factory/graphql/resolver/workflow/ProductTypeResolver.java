@@ -49,9 +49,9 @@ public class ProductTypeResolver {
     /**
      * Returns a single product type by ID.
      *
-     * @param id the UUID of the worker
-     * @return the worker as a {@link GqlProductType} object
-     * @throws RuntimeException if the worker is not found
+     * @param id the UUID of the product type
+     * @return the product type as a {@link GqlProductType} object
+     * @throws RuntimeException if the product type is not found
      */
     @QueryMapping(name = "productType")
     public GqlProductType productTypeById(@Argument UUID id) {
@@ -68,12 +68,12 @@ public class ProductTypeResolver {
      */
     @MutationMapping
     public GqlProductType createProductType(@Argument GqlCreateProductTypeInput input) {
-        ProductTypeModel worker = ProductTypeModel.builder()
+        ProductTypeModel productTypeModel = ProductTypeModel.builder()
                 .code(input.getCode())
                 .description(input.getDescription())
                 .name(input.getName())
                 .build();
-        ProductTypeModel created = productTypeService.create(worker);
+        ProductTypeModel created = productTypeService.create(productTypeModel);
         return toGql(created);
     }
 
