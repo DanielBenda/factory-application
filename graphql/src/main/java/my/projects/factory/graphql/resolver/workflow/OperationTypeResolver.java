@@ -1,0 +1,132 @@
+package my.projects.factory.graphql.resolver.workflow;
+
+import my.projects.factory.domain.model.workflow.OperationTypeModel;
+import my.projects.factory.domain.service.workflow.OperationTypeService;
+import my.projects.factory.generated.GqlCreateOperationTypeInput;
+import my.projects.factory.generated.GqlOperationType;
+import my.projects.factory.generated.GqlUpdateOperationTypeInput;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
+import java.util.UUID;
+
+@Controller
+public class OperationTypeResolver {
+
+    private final OperationTypeService operationTypeService;
+
+    /**
+     * Constructor.
+     *
+     * @param operationTypeService the service providing business logic for operation types
+     */
+    public OperationTypeResolver(OperationTypeService operationTypeService) {
+        this.operationTypeService = operationTypeService;
+    }
+
+    /**
+     * Returns all operation types.
+     *
+     * @return list of all operation types as {@link GqlOperationType} objects
+     */
+    @QueryMapping(name = "operationTypes")
+    public List<GqlOperationType> operationTypes() {
+        return operationTypeService.findAll()
+                .stream()
+                .map(this::toGql)
+                .toList();
+    }
+
+    /**
+     * Returns a single operation type by ID.
+     *
+     * @param id the UUID of the operation type
+     * @return the operation type as a {@link GqlOperationType} object
+     * @throws RuntimeException if the operation type is not found
+     */
+    @QueryMapping(name = "operationType")
+    public GqlOperationType operationTypeById(@Argument UUID id) {
+        return operationTypeService.findById(id)
+                .map(this::toGql)
+                .orElseThrow(() -> new RuntimeException("Operation type not found: " + id));
+    }
+
+    /**
+     * Creates a new operation type.
+     *
+     * @param input with parameters for creating a operation type
+     * @return the created operation type as {@link GqlOperationType}
+     */
+    @MutationMapping
+    public GqlOperationType createOperationType(@Argument GqlCreateOperationTypeInput input) {
+        OperationTypeModel operationTypeModel = OperationTypeModel.builder()
+                .description(input.getDescription())
+                .name(input.getName())
+                .build();
+        OperationTypeModel created = operationTypeService.create(operationTypeModel);
+        return toGql(created);
+    }
+
+    /**
+     * Deletes an operation type by ID.
+     *
+     * @param id the UUID of the operation type to delete
+     * @return true if deletion was successful
+     */
+    @MutationMapping
+    public Boolean deleteOperationType(@Argument UUID id) {
+        operationTypeService.delete(id);
+        return true;
+    }
+
+    /**
+     * Updates an existing operationType.
+     * <p>
+     * Fetches the current operationType by ID, applies only non-null fields from the
+     * GraphQL input (PATCH-style update), and forwards the updated domain model
+     * to the service layer. Returns the updated operationType as a GraphQL type.
+     *
+     * @param id    the UUID of the operationType to update
+     * @param input the fields to update (nullable values are ignored)
+     * @return the updated operationType in GraphQL representation
+     * @throws RuntimeException if the operationType with the given ID does not exist
+     */
+    @MutationMapping
+    public GqlOperationType updateOperationType(@Argument UUID id, @Argument GqlUpdateOperationTypeInput input) {
+
+        OperationTypeModel existing = operationTypeService.findById(id)
+                .orElseThrow(() -> new RuntimeException("OperationType not found: " + id));
+
+        OperationTypeModel updatedOperationType = OperationTypeModel.builder()
+                .id(existing.id())
+                .description(input.getDescription() != null ? input.getDescription() : existing.description())
+                .name(input.getName() != null ? input.getName() : existing.name())
+                .build();
+
+        OperationTypeModel saved = operationTypeService.update(id, updatedOperationType);
+
+        return toGql(saved);
+    }
+
+    /**
+     * Converts a {@link OperationTypeModel} to a {@link GqlOperationType}.
+     *
+     * @param model the OperationTypeModel to convert
+     * @return the corresponding GqlOperationType, or null if input is null
+     */
+    private GqlOperationType toGql(OperationTypeModel model) {
+        if (model == null) {
+            return null;
+        }
+        return GqlOperationType.builder()
+                .withId(model.id())
+                .withDescription(model.description())
+                .withName(model.name())
+                .withCreated(model.created())
+                .withCreatedBy(model.createdBy())
+                .build();
+    }
+}

@@ -7,6 +7,7 @@ CREATE SCHEMA IF NOT EXISTS factory;
 -- DROP ALL TABLES
 ------------------------------------------------------------
 DROP TABLE IF EXISTS factory.t_part_operation CASCADE;
+DROP TABLE IF EXISTS factory.t_operation_type CASCADE;
 DROP TABLE IF EXISTS factory.t_operation CASCADE;
 DROP TABLE IF EXISTS factory.t_machine CASCADE;
 DROP TABLE IF EXISTS factory.t_part_machine_type CASCADE;
@@ -158,14 +159,31 @@ CREATE TABLE factory.t_work_orders_for_worker
 );
 
 ------------------------------------------------------------
--- Operations (independent → NOT tied to work orders anymore)
+-- Operation Types (master data)
+------------------------------------------------------------
+CREATE TABLE factory.t_operation_type
+(
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name        VARCHAR(100) NOT NULL UNIQUE,
+    description VARCHAR,
+    created     DATE         NOT NULL,
+    created_by  VARCHAR(100) NOT NULL
+);
+
+------------------------------------------------------------
+-- Operations
 ------------------------------------------------------------
 CREATE TABLE factory.t_operation
 (
     id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    operation_type_id      UUID         NOT NULL,
     name                   VARCHAR(100) NOT NULL,
     description            VARCHAR(255),
-    estimated_time_minutes INT
+    estimated_time_minutes INT,
+
+    FOREIGN KEY (operation_type_id)
+        REFERENCES factory.t_operation_type (id)
+        ON DELETE RESTRICT
 );
 
 ------------------------------------------------------------
@@ -187,6 +205,7 @@ CREATE TABLE factory.t_part_operation
 ------------------------------------------------------------
 TRUNCATE
     factory.t_part_operation,
+    factory.t_operation_type,
     factory.t_operation,
     factory.t_machine,
     factory.t_part_machine_type,
@@ -291,12 +310,31 @@ SELECT CONCAT('PART-', n),
        CONCAT('Díl ', n)
 FROM generate_series(1, 20) n;
 
+-- Operation types
+INSERT INTO factory.t_operation_type (name, description, created, created_by)
+VALUES
+    ('Frézování',   'Třískové obrábění pomocí frézy', CURRENT_DATE, 'ADMIN'),
+    ('Soustružení', 'Obrábění rotačních dílů',        CURRENT_DATE, 'ADMIN'),
+    ('Laserování',  'Řezání materiálu laserem',       CURRENT_DATE, 'ADMIN'),
+    ('Ohýbání',     'Tváření materiálu za studena',   CURRENT_DATE, 'ADMIN'),
+    ('Broušení',    'Dokončovací operace povrchu',    CURRENT_DATE, 'ADMIN'),
+    ('Vrtání',      'Vytváření otvorů',               CURRENT_DATE, 'ADMIN');
+
 -- Operations
-INSERT INTO factory.t_operation (name, description, estimated_time_minutes)
-VALUES ('Řezání', 'Hrubé dělení materiálu', 5),
-       ('Frézování', 'Obrábění ploch', 12),
-       ('Soustružení', 'Obrábění rotačních dílů', 10),
-       ('Broušení', 'Finální přesné opracování', 6);
+INSERT INTO factory.t_operation (operation_type_id, name, description, estimated_time_minutes)
+SELECT ot.id, o.name, o.description, o.time
+FROM (
+         VALUES
+             ('Frézování',   'Hrubovací frézování',  'Hrubé obrábění ploch', 12),
+             ('Frézování',   'Dokončovací frézování','Přesné obrábění',      8),
+             ('Soustružení', 'Soustružení hřídele',  'Rotační obrábění',     10),
+             ('Laserování',  'Laserový řez',         'Řezání plechu',        5),
+             ('Ohýbání',     'Ohyb plechu',          'Ohyb na lisu',         6),
+             ('Broušení',    'Jemné broušení',       'Finální povrch',       7)
+     ) AS o(type, name, description, time)
+         JOIN factory.t_operation_type ot
+              ON ot.name = o.type;
+
 
 -- Part ↔ Operations
 INSERT INTO factory.t_part_operation (part_id, operation_id, sequence)

@@ -1,0 +1,32 @@
+type OperationType {
+    id: UUID!
+    description: String
+    name: String!
+    created: Date!
+    createdBy: String!
+}
+
+extend type Query {
+    operationTypes: [OperationType!]!
+    operationType(id: UUID!): OperationType
+}
+
+extend type Mutation {
+    createOperationType(input: CreateOperationTypeInput!): OperationType!
+    updateOperationType(id: UUID!, input: UpdateOperationTypeInput!): OperationType!
+    deleteOperationType(id: UUID!): Boolean!
+}
+
+input CreateOperationTypeInput {
+    description: String
+    name: String!
+    created: Date!
+    createdBy: String!
+}
+
+input UpdateOperationTypeInput {
+    description: String
+    name: String!
+    created: Date!
+    createdBy: String!
+}
