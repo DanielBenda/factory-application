@@ -106,8 +106,8 @@ CREATE TABLE factory.t_machine_type
 CREATE TABLE factory.t_machine
 (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    machine_type_id UUID               NOT NULL,
     code            VARCHAR(50) UNIQUE NOT NULL,
+    machine_type_id UUID               NOT NULL,
     name            VARCHAR(100),
     year            INT,
 
@@ -164,8 +164,8 @@ CREATE TABLE factory.t_work_orders_for_worker
 CREATE TABLE factory.t_operation_type
 (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name        VARCHAR(100) NOT NULL UNIQUE,
     description VARCHAR,
+    name        VARCHAR(100) NOT NULL UNIQUE,
     created     DATE         NOT NULL,
     created_by  VARCHAR(100) NOT NULL
 );
@@ -288,11 +288,15 @@ VALUES ('MT-CNC3', '3-osé vertikální CNC centrum vhodné pro sériové obráb
        ('MT-GRIND', 'Bruska pro finální obrábění povrchů s velmi vysokou přesností.', 'Broušení');
 
 -- Machines
-INSERT INTO factory.t_machine (machine_type_id, code, name, year)
-SELECT mt.id, CONCAT('MC-', n), CONCAT(mt.name, ' ', n), (2010 + (n % 10))
+INSERT INTO factory.t_machine (code, machine_type_id, name, year)
+SELECT
+    CONCAT('MC-', n),
+    mt.id,
+    CONCAT(mt.name, ' ', n),
+    2010 + (n % 10)
 FROM factory.t_machine_type mt
          CROSS JOIN generate_series(1, 10) AS n
-ORDER BY mt.id
+ORDER BY mt.code, n
 LIMIT 10;
 
 -- Product types

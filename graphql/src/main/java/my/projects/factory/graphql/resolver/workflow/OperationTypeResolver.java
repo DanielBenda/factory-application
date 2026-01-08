@@ -57,7 +57,7 @@ public class OperationTypeResolver {
     /**
      * Creates a new operation type.
      *
-     * @param input with parameters for creating a operation type
+     * @param input with parameters for creating an operation type
      * @return the created operation type as {@link GqlOperationType}
      */
     @MutationMapping

@@ -1,0 +1,32 @@
+type Machine {
+    id: UUID!
+    code: String!
+    machineType: String!
+    name: String
+    year: Int
+}
+
+extend type Query {
+    machines: [Machine!]!
+    machine(id: UUID!): Machine
+}
+
+extend type Mutation {
+    createMachine(input: CreateMachineInput!): Machine!
+    updateMachine(id: UUID!, input: UpdateMachineInput!): Machine!
+    deleteMachine(id: UUID!): Boolean!
+}
+
+input CreateMachineInput {
+    code: String!
+    machineType: String!
+    name: String
+    year: Int
+}
+
+input UpdateMachineInput {
+    code: String!
+    machineType: String!
+    name: String
+    year: Int
+}
