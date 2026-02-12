@@ -6,8 +6,13 @@ type Machine {
     year: Int
 }
 
+type MachinePage {
+    items: [Machine!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    machines: [Machine!]!
+    machines(page: Int!, size: Int!): MachinePage!
     machine(id: UUID!): Machine
 }
 

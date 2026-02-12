@@ -5,8 +5,13 @@ type MachineType {
     name: String!
 }
 
+type MachineTypePage {
+    items: [MachineType!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    machineTypes: [MachineType!]!
+    machineTypes(page: Int!, size: Int!): MachineTypePage!
     machineType(id: UUID!): MachineType
 }
 

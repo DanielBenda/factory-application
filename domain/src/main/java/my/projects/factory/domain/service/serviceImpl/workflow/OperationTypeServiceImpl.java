@@ -2,7 +2,7 @@ package my.projects.factory.domain.service.serviceImpl.workflow;
 
 import my.projects.factory.domain.mapper.workflow.OperationTypeMapper;
 import my.projects.factory.domain.model.workflow.OperationTypeModel;
-import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
+import my.projects.factory.domain.service.serviceImpl.PageableServiceImpl;
 import my.projects.factory.domain.service.workflow.OperationTypeService;
 import my.projects.factory.persistence.entity.workflow.OperationType;
 import my.projects.factory.persistence.repository.workflow.OperationTypeRepository;
@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @Service
 public class OperationTypeServiceImpl
-        extends CrudServiceImpl<OperationTypeModel, OperationType, UUID>
+        extends PageableServiceImpl<OperationTypeModel, OperationType, UUID>
         implements OperationTypeService {
 
     protected OperationTypeServiceImpl(OperationTypeRepository repository, OperationTypeMapper mapper) {

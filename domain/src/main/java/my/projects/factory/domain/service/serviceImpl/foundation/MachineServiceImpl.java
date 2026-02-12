@@ -3,7 +3,7 @@ package my.projects.factory.domain.service.serviceImpl.foundation;
 import my.projects.factory.domain.mapper.foundation.MachineMapper;
 import my.projects.factory.domain.model.foundation.MachineModel;
 import my.projects.factory.domain.service.foundation.MachineService;
-import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
+import my.projects.factory.domain.service.serviceImpl.PageableServiceImpl;
 import my.projects.factory.persistence.entity.foundation.Machine;
 import my.projects.factory.persistence.repository.foundation.MachineRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @Service
 public class MachineServiceImpl
-        extends CrudServiceImpl<MachineModel, Machine, UUID>
+        extends PageableServiceImpl<MachineModel, Machine, UUID>
         implements MachineService {
 
     public MachineServiceImpl(MachineRepository repository, MachineMapper mapper) {

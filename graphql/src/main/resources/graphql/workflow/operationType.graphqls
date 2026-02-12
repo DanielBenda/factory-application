@@ -6,8 +6,13 @@ type OperationType {
     createdBy: String!
 }
 
+type OperationTypePage {
+    items: [OperationType!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    operationTypes: [OperationType!]!
+    operationTypes(page: Int, size: Int!): OperationTypePage!
     operationType(id: UUID!): OperationType
 }
 

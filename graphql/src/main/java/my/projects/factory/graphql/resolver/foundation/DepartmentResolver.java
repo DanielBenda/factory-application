@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.foundation.DepartmentService;
 import my.projects.factory.generated.GqlCreateDepartmentInput;
 import my.projects.factory.generated.GqlDepartment;
 import my.projects.factory.generated.GqlUpdateDepartmentInput;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,14 +39,39 @@ public class DepartmentResolver {
     /**
      * Returns all workers.
      *
-     * @return list of all workers as {@link GqlDepartment} objects
+     * @return pageable of all workers as {@link GqlDepartment} objects
      */
     @QueryMapping(name = "departments")
-    public List<GqlDepartment> departments() {
-        return departmentService.findAll()
+    public Page<DepartmentModel> departments(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return departmentService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code DepartmentPage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of departments for the current page
+     */
+    @SchemaMapping(typeName = "DepartmentPage", field = "items")
+    public List<GqlDepartment> departmentPageItems(Page<DepartmentModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
+    }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code DepartmentPage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of departments across all pages
+     */
+    @SchemaMapping(typeName = "DepartmentPage", field = "totalCount")
+    public Long departmentPageTotalCount(Page<DepartmentModel> page) {
+        return page.getTotalElements();
     }
 
     /**

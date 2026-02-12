@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.foundation.WorkerService;
 import my.projects.factory.generated.GqlCreateWorkerInput;
 import my.projects.factory.generated.GqlUpdateWorkerInput;
 import my.projects.factory.generated.GqlWorker;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,14 +39,39 @@ public class WorkerResolver {
     /**
      * Returns all workers.
      *
-     * @return list of all workers as {@link GqlWorker} objects
+     * @return pageable of all workers as {@link GqlWorker} objects
      */
     @QueryMapping(name = "workers")
-    public List<GqlWorker> workers() {
-        return workerService.findAll()
+    public Page<WorkerModel> workers(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return workerService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code WorkerPage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of workers for the current page
+     */
+    @SchemaMapping(typeName = "WorkerPage", field = "items")
+    public List<GqlWorker> workerPageItems(Page<WorkerModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
+    }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code WorkerPage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of workers across all pages
+     */
+    @SchemaMapping(typeName = "WorkerPage", field = "totalCount")
+    public Long workerTotalCount(Page<WorkerModel> page) {
+        return page.getTotalElements();
     }
 
     /**

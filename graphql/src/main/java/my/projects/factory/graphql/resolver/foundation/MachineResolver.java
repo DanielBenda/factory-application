@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.foundation.MachineService;
 import my.projects.factory.generated.GqlCreateMachineInput;
 import my.projects.factory.generated.GqlMachine;
 import my.projects.factory.generated.GqlUpdateMachineInput;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,14 +39,39 @@ public class MachineResolver {
     /**
      * Returns all machines.
      *
-     * @return list of all machines as {@link GqlMachine} objects
+     * @return pageable of all machines as {@link GqlMachine} objects
      */
     @QueryMapping(name = "machines")
-    public List<GqlMachine> machines() {
-        return machineService.findAll()
+    public Page<MachineModel> machines(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return machineService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code MachinePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of machines for the current page
+     */
+    @SchemaMapping(typeName = "MachinePage", field = "items")
+    public List<GqlMachine> machinePageItems(Page<MachineModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
+    }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code MachinePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of machines across all pages
+     */
+    @SchemaMapping(typeName = "MachinePage", field = "totalCount")
+    public Long machinePageTotalCount(Page<MachineModel> page) {
+        return page.getTotalElements();
     }
 
     /**

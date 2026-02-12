@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.generated.GqlCreateMachineTypeInput;
 import my.projects.factory.generated.GqlMachineType;
 import my.projects.factory.generated.GqlUpdateMachineTypeInput;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,14 +39,39 @@ public class MachineTypeResolver {
     /**
      * Returns all machine types.
      *
-     * @return list of all machine types as {@link GqlMachineType} objects
+     * @return pageable of all machine types as {@link GqlMachineType} objects
      */
     @QueryMapping(name = "machineTypes")
-    public List<GqlMachineType> machineTypes() {
-        return machineTypeService.findAll()
+    public Page<MachineTypeModel> machineTypes(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return machineTypeService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code MachineTypePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of machine types for the current page
+     */
+    @SchemaMapping(typeName = "MachineTypePage", field = "items")
+    public List<GqlMachineType> machineTypePageItems(Page<MachineTypeModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
+    }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code MachineTypePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of machine types across all pages
+     */
+    @SchemaMapping(typeName = "MachineTypePage", field = "totalCount")
+    public Long machineTypePageTotalCount(Page<MachineTypeModel> page) {
+        return page.getTotalElements();
     }
 
     /**

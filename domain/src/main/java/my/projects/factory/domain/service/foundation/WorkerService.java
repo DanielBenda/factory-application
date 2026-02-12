@@ -2,14 +2,17 @@ package my.projects.factory.domain.service.foundation;
 
 import my.projects.factory.domain.model.foundation.WorkerModel;
 import my.projects.factory.domain.service.CrudService;
+import my.projects.factory.domain.service.PageableService;
 
 import java.util.UUID;
 
 /**
  * Service interface for managing {@link WorkerModel} entities.
- * Provides basic CRUD operations and a custom method to find a worker by surname.
+ * Provides basic CRUD operations, pageable and a custom method to find a worker by surname.
  */
-public interface WorkerService extends CrudService<WorkerModel, UUID> {
+public interface WorkerService
+        extends CrudService<WorkerModel, UUID>,
+        PageableService<WorkerModel, UUID> {
 
     /**
      * Finds a worker by their surname.
