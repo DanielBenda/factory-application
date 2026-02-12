@@ -9,8 +9,13 @@ type Worker {
     workPosition: String
 }
 
+type WorkerPage {
+    items: [Worker!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    workers: [Worker!]!
+    workers(page: Int!, size: Int!): WorkerPage!
     worker(id: UUID!): Worker
 }
 

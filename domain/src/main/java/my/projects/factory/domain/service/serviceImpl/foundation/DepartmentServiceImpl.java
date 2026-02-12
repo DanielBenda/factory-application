@@ -3,7 +3,7 @@ package my.projects.factory.domain.service.serviceImpl.foundation;
 import my.projects.factory.domain.mapper.foundation.DepartmentMapper;
 import my.projects.factory.domain.model.foundation.DepartmentModel;
 import my.projects.factory.domain.service.foundation.DepartmentService;
-import my.projects.factory.domain.service.serviceImpl.CrudServiceImpl;
+import my.projects.factory.domain.service.serviceImpl.PageableServiceImpl;
 import my.projects.factory.persistence.entity.foundation.Department;
 import my.projects.factory.persistence.repository.foundation.DepartmentRepository;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 @Service
 public class DepartmentServiceImpl
-        extends CrudServiceImpl<DepartmentModel, Department, UUID>
+        extends PageableServiceImpl<DepartmentModel, Department, UUID>
         implements DepartmentService {
 
     public DepartmentServiceImpl(DepartmentRepository repository, DepartmentMapper mapper) {

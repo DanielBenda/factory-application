@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.workflow.ProductTypeService;
 import my.projects.factory.generated.GqlCreateProductTypeInput;
 import my.projects.factory.generated.GqlProductType;
 import my.projects.factory.generated.GqlUpdateProductTypeInput;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,14 +39,39 @@ public class ProductTypeResolver {
     /**
      * Returns all product types.
      *
-     * @return list of all product types as {@link GqlProductType} objects
+     * @return pageable of all product types as {@link GqlProductType} objects
      */
     @QueryMapping(name = "productTypes")
-    public List<GqlProductType> productTypes() {
-        return productTypeService.findAll()
+    public Page<ProductTypeModel> productTypes(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return productTypeService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code ProductTypePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of product types for the current page
+     */
+    @SchemaMapping(typeName = "ProductTypePage", field = "items")
+    public List<GqlProductType> productTypePageItems(Page<ProductTypeModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
+    }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code ProductTypePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of product types across all pages
+     */
+    @SchemaMapping(typeName = "ProductTypePage", field = "totalCount")
+    public Long productTypePageTotalCount(Page<ProductTypeModel> page) {
+        return page.getTotalElements();
     }
 
     /**

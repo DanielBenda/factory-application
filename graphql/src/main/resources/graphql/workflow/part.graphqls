@@ -5,8 +5,13 @@ type Part {
     name: String!
 }
 
+type PartPage {
+    items: [Part!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    parts: [Part!]!
+    parts(page: Int!, size: Int!): PartPage!
     part(id: UUID!): Part
 }
 

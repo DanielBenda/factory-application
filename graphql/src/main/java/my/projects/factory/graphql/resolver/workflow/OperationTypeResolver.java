@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.workflow.OperationTypeService;
 import my.projects.factory.generated.GqlCreateOperationTypeInput;
 import my.projects.factory.generated.GqlOperationType;
 import my.projects.factory.generated.GqlUpdateOperationTypeInput;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -30,15 +33,41 @@ public class OperationTypeResolver {
     /**
      * Returns all operation types.
      *
-     * @return list of all operation types as {@link GqlOperationType} objects
+     * @return pageable all operation types as {@link GqlOperationType} objects
      */
     @QueryMapping(name = "operationTypes")
-    public List<GqlOperationType> operationTypes() {
-        return operationTypeService.findAll()
+    public Page<OperationTypeModel> operationTypes(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return operationTypeService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code OperationTypePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of operation types for the current page
+     */
+    @SchemaMapping(typeName = "OperationTypePage", field = "items")
+    public List<GqlOperationType> operationTypePageItems(Page<OperationTypeModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
     }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code OperationTypePage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of operation types across all pages
+     */
+    @SchemaMapping(typeName = "OperationTypePage", field = "totalCount")
+    public Long operationTypePageTotalCount(Page<OperationTypeModel> page) {
+        return page.getTotalElements();
+    }
+
 
     /**
      * Returns a single operation type by ID.

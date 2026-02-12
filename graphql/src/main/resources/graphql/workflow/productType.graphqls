@@ -7,8 +7,13 @@ type ProductType {
     name: String!
 }
 
+type ProductTypePage {
+    items: [ProductType!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    productTypes: [ProductType!]!
+    productTypes(page: Int!, size: Int!): ProductTypePage!
     productType(id: UUID!): ProductType
 }
 

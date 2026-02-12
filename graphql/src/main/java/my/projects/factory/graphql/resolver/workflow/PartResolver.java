@@ -5,9 +5,12 @@ import my.projects.factory.domain.service.workflow.PartService;
 import my.projects.factory.generated.GqlCreatePartInput;
 import my.projects.factory.generated.GqlPart;
 import my.projects.factory.generated.GqlUpdatePartInput;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -36,14 +39,39 @@ public class PartResolver {
     /**
      * Returns all parts.
      *
-     * @return list of all parts as {@link GqlPart} objects
+     * @return pageable of all parts as {@link GqlPart} objects
      */
     @QueryMapping(name = "parts")
-    public List<GqlPart> parts() {
-        return partService.findAll()
+    public Page<PartModel> parts(
+            @Argument int page,
+            @Argument int size
+    ) {
+        return partService.findPage(PageRequest.of(page, size));
+    }
+
+    /**
+     * Resolves the {@code items} field of {@code PartPage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return list of parts for the current page
+     */
+    @SchemaMapping(typeName = "PartPage", field = "items")
+    public List<GqlPart> partPageItems(Page<PartModel> page) {
+        return page.getContent()
                 .stream()
                 .map(this::toGql)
                 .toList();
+    }
+
+    /**
+     * Resolves the {@code totalCount} field of {@code PartPage}.
+     *
+     * @param page Spring Data page returned by the parent query
+     * @return total number of parts across all pages
+     */
+    @SchemaMapping(typeName = "PartPage", field = "totalCount")
+    public Long partPageTotalCount(Page<PartModel> page) {
+        return page.getTotalElements();
     }
 
     /**

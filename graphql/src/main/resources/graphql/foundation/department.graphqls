@@ -5,8 +5,13 @@ type Department {
     name: String!
 }
 
+type DepartmentPage {
+    items: [Department!]!
+    totalCount: Long!
+}
+
 extend type Query {
-    departments: [Department!]!
+    departments(page: Int!, size: Int!): DepartmentPage!
     department(id: UUID): Department
 }
 
