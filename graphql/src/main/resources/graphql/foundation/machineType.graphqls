@@ -11,7 +11,7 @@ type MachineTypePage {
 }
 
 extend type Query {
-    machineTypes(page: Int!, size: Int!): MachineTypePage!
+    machineTypes(page: Int!, size: Int!, filter: MachineTypeFilter): MachineTypePage!
     machineType(id: UUID!): MachineType
 }
 
@@ -19,6 +19,11 @@ extend type Mutation {
     createMachineType(input: CreateMachineTypeInput!): MachineType!
     updateMachineType(id: UUID!, input: UpdateMachineTypeInput!): MachineType!
     deleteMachineType(id: UUID!): Boolean!
+}
+
+input MachineTypeFilter {
+    nameQuery: String
+    codeQuery: String
 }
 
 input CreateMachineTypeInput {

@@ -5,8 +5,10 @@ import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.generated.GqlCreateMachineTypeInput;
 import my.projects.factory.generated.GqlMachineType;
 import my.projects.factory.generated.GqlUpdateMachineTypeInput;
+import my.projects.factory.domain.filter.foundation.MachineTypeFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -37,16 +39,22 @@ public class MachineTypeResolver {
     }
 
     /**
-     * Returns all machine types.
+     * GraphQL query for retrieving machine types with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable of all machine types as {@link GqlMachineType} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, codeQuery)
+     * @return paginated list of {@link MachineTypeModel} matching the filter criteria
      */
-    @QueryMapping(name = "machineTypes")
+    @QueryMapping
     public Page<MachineTypeModel> machineTypes(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument MachineTypeFilter filter
     ) {
-        return machineTypeService.findPage(PageRequest.of(page, size));
+        Pageable pageable = PageRequest.of(page, size);
+        return machineTypeService.findMachineTypes(filter, pageable);
     }
 
     /**

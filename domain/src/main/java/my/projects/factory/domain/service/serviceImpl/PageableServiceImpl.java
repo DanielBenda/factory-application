@@ -21,8 +21,8 @@ public abstract class PageableServiceImpl<M, E, ID>
         extends CrudServiceImpl<M, E, ID>
         implements PageableService<M, ID> {
 
-    private final JpaRepository<E, ID> repository;
-    private final Function<E, M> toModel;
+    protected final JpaRepository<E, ID> repository;
+    protected final Function<E, M> toModel;
 
     /**
      * Constructs a new CrudServiceImpl.
