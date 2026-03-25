@@ -22,20 +22,6 @@ public interface MachineTypeRepository extends JpaRepository<MachineType, UUID> 
      * Finds {@link MachineType} entities contains the given search string, ignoring case.
      * <p>
      * @param name     the substring to search for in the name field
-     * @param code     the substring to search for in the code field
-     * @param pageable pagination information (page number, size, sorting)
-     * @return a {@link Page} of matching {@link MachineType} entities
-     */
-    Page<MachineType> findByNameContainingIgnoreCaseAndCodeContainingIgnoreCase(
-            String name,
-            String code,
-            Pageable pageable
-    );
-
-    /**
-     * Finds {@link MachineType} entities contains the given search string, ignoring case.
-     * <p>
-     * @param name     the substring to search for in the name field
      * @param pageable pagination information (page number, size, sorting)
      * @return a {@link Page} of matching {@link MachineType} entities
      */

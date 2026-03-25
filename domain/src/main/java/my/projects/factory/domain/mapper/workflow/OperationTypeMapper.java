@@ -17,12 +17,13 @@ public class OperationTypeMapper implements EntityMapper<OperationTypeModel, Ope
      * Converts a {@link OperationType} entity to a {@link OperationTypeModel}.
      *
      * @param operationType the entity to convert; must not be null
-     * @return the corresponding {@code OperationTypeModel} with id, description, name, created and createdBy set
+     * @return the corresponding {@code OperationTypeModel} with id, code, description, name, created and createdBy set
      */
     @Override
     public OperationTypeModel toModel(OperationType operationType) {
         return OperationTypeModel.builder()
                 .id(operationType.getId())
+                .code(operationType.getCode())
                 .description(operationType.getDescription())
                 .name(operationType.getName())
                 .created(operationType.getCreated())
@@ -34,12 +35,13 @@ public class OperationTypeMapper implements EntityMapper<OperationTypeModel, Ope
      * Converts a {@link OperationTypeModel} to a {@link OperationType} entity.
      *
      * @param operationTypeModel the {@code OperationTypeModel} to convert; must not be null
-     * @return a {@code OperationType} entity with id, description, name, created and createdBy set
+     * @return a {@code OperationType} entity with id, code, description, name, created and createdBy set
      */
     @Override
     public OperationType toEntity(OperationTypeModel operationTypeModel) {
         OperationType operationType = new OperationType();
         operationType.setId(operationTypeModel.id());
+        operationType.setCode(operationTypeModel.code());
         operationType.setDescription(operationTypeModel.description());
         operationType.setName(operationTypeModel.name());
         operationType.setCreated(operationTypeModel.created());

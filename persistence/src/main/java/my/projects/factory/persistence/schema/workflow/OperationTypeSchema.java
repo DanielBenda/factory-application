@@ -10,6 +10,7 @@ public class OperationTypeSchema {
     public static final String TABLE = "t_operation_type";
     public static final String SCHEMA = "factory";
     public static final String ID = "id";
+    public static final String CODE = "code";
     public static final String DESCRIPTION = "description";
     public static final String NAME = "name";
     public static final String CREATED = "created";

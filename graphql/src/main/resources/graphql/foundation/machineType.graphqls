@@ -21,15 +21,15 @@ extend type Mutation {
     deleteMachineType(id: UUID!): Boolean!
 }
 
-input MachineTypeFilter {
-    nameQuery: String
-    codeQuery: String
-}
-
 input CreateMachineTypeInput {
     code: String!
     description: String
     name: String!
+}
+
+input MachineTypeFilter {
+    nameQuery: String
+    codeQuery: String
 }
 
 input UpdateMachineTypeInput {

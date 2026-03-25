@@ -5,13 +5,18 @@ import my.projects.factory.domain.mapper.foundation.MachineTypeMapper;
 import my.projects.factory.domain.model.foundation.MachineTypeModel;
 import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.domain.service.serviceImpl.PageableServiceImpl;
+import my.projects.factory.domain.service.support.FilterExecutor;
 import my.projects.factory.persistence.entity.foundation.MachineType;
 import my.projects.factory.persistence.repository.foundation.MachineTypeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Implementation of {@link MachineTypeService} that handles business logic
@@ -49,31 +54,23 @@ public class MachineTypeServiceImpl
             Pageable pageable
     ) {
 
-        if (filter == null) {
-            return machineTypeRepository.findAll(pageable).map(mapper::toModel);
+        Map<String, String> filters = new HashMap<>();
+
+        if (filter != null) {
+            filters.put("name", filter.getNameQuery());
+            filters.put("code", filter.getCodeQuery());
         }
 
-        String name = filter.getNameQuery();
-        String code = filter.getCodeQuery();
+        Map<String, Function<String, Supplier<Page<MachineType>>>> queryMap = Map.of(
+                "name", value -> () -> machineTypeRepository.findByNameContainingIgnoreCase(value, pageable),
+                "code", value -> () -> machineTypeRepository.findByCodeContainingIgnoreCase(value, pageable)
+        );
 
-        if (name != null && code != null) {
-            return machineTypeRepository
-                    .findByNameContainingIgnoreCaseAndCodeContainingIgnoreCase(name, code, pageable)
-                    .map(mapper::toModel);
-        }
-
-        if (name != null) {
-            return machineTypeRepository
-                    .findByNameContainingIgnoreCase(name, pageable)
-                    .map(mapper::toModel);
-        }
-
-        if (code != null) {
-            return machineTypeRepository
-                    .findByCodeContainingIgnoreCase(code, pageable)
-                    .map(mapper::toModel);
-        }
-
-        return machineTypeRepository.findAll(pageable).map(mapper::toModel);
+        return FilterExecutor.execute(
+                filters,
+                queryMap,
+                () -> machineTypeRepository.findAll(pageable),
+                mapper::toModel
+        );
     }
 }

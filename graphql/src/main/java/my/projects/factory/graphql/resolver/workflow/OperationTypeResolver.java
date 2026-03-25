@@ -1,5 +1,6 @@
 package my.projects.factory.graphql.resolver.workflow;
 
+import my.projects.factory.domain.filter.workflow.OperationTypeFilter;
 import my.projects.factory.domain.model.workflow.OperationTypeModel;
 import my.projects.factory.domain.service.workflow.OperationTypeService;
 import my.projects.factory.generated.GqlCreateOperationTypeInput;
@@ -7,6 +8,7 @@ import my.projects.factory.generated.GqlOperationType;
 import my.projects.factory.generated.GqlUpdateOperationTypeInput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -31,16 +33,22 @@ public class OperationTypeResolver {
     }
 
     /**
-     * Returns all operation types.
+     * GraphQL query for retrieving operation types with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable all operation types as {@link GqlOperationType} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, codeQuery)
+     * @return paginated list of {@link OperationTypeModel} matching the filter criteria
      */
     @QueryMapping(name = "operationTypes")
     public Page<OperationTypeModel> operationTypes(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument OperationTypeFilter filter
     ) {
-        return operationTypeService.findPage(PageRequest.of(page, size));
+        Pageable pageable = PageRequest.of(page, size);
+        return operationTypeService.findOperationTypes(filter, pageable);
     }
 
     /**
@@ -152,6 +160,7 @@ public class OperationTypeResolver {
         }
         return GqlOperationType.builder()
                 .withId(model.id())
+                .withCode(model.code())
                 .withDescription(model.description())
                 .withName(model.name())
                 .withCreated(model.created())

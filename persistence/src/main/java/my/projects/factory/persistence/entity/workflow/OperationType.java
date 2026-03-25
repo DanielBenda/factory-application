@@ -37,6 +37,9 @@ public class OperationType implements Serializable {
     @Column(name = OperationTypeSchema.ID, nullable = false)
     private UUID id;
 
+    @Column(name = OperationTypeSchema.CODE, nullable = false, length = 100)
+    private String code;
+
     @Column(name = OperationTypeSchema.DESCRIPTION, length = Integer.MAX_VALUE)
     private String description;
 

@@ -167,7 +167,8 @@ CREATE TABLE factory.t_operation_type
 (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     description VARCHAR,
-    name        VARCHAR(100) NOT NULL UNIQUE,
+    code            VARCHAR(50)  NOT NULL UNIQUE,
+    name        VARCHAR(100) NOT NULL,
     created     DATE         NOT NULL,
     created_by  VARCHAR(100) NOT NULL
 );
@@ -215,6 +216,18 @@ CREATE INDEX idx_machine_type_name_trgm
 
 CREATE INDEX idx_machine_type_code_trgm
     ON factory.t_machine_type
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- operation type
+------------------------------------------------------------
+
+CREATE INDEX idx_operation_type_name_trgm
+    ON factory.t_operation_type
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_operation_type_code_trgm
+    ON factory.t_operation_type
         USING gin (LOWER(code) gin_trgm_ops);
 
 ------------------------------------------------------------
@@ -331,13 +344,13 @@ SELECT CONCAT('PART-', n),
 FROM generate_series(1, 20) n;
 
 -- Operation types
-INSERT INTO factory.t_operation_type (name, description, created, created_by)
-VALUES ('Frézování', 'Třískové obrábění pomocí frézy', CURRENT_DATE, 'ADMIN'),
-       ('Soustružení', 'Obrábění rotačních dílů', CURRENT_DATE, 'ADMIN'),
-       ('Laserování', 'Řezání materiálu laserem', CURRENT_DATE, 'ADMIN'),
-       ('Ohýbání', 'Tváření materiálu za studena', CURRENT_DATE, 'ADMIN'),
-       ('Broušení', 'Dokončovací operace povrchu', CURRENT_DATE, 'ADMIN'),
-       ('Vrtání', 'Vytváření otvorů', CURRENT_DATE, 'ADMIN');
+INSERT INTO factory.t_operation_type (code, name, description, created, created_by)
+VALUES ('FREZ', 'Frézování', 'Třískové obrábění pomocí frézy', CURRENT_DATE, 'ADMIN'),
+       ('SOUS', 'Soustružení', 'Obrábění rotačních dílů', CURRENT_DATE, 'ADMIN'),
+       ('LASER', 'Laserování', 'Řezání materiálu laserem', CURRENT_DATE, 'ADMIN'),
+       ('BEND', 'Ohýbání', 'Tváření materiálu za studena', CURRENT_DATE, 'ADMIN'),
+       ('BROU', 'Broušení', 'Dokončovací operace povrchu', CURRENT_DATE, 'ADMIN'),
+       ('DRILL', 'Vrtání', 'Vytváření otvorů', CURRENT_DATE, 'ADMIN');
 
 -- Operations
 INSERT INTO factory.t_operation (operation_type_id, name, description, estimated_time_minutes)
