@@ -12,7 +12,7 @@ type MachinePage {
 }
 
 extend type Query {
-    machines(page: Int!, size: Int!): MachinePage!
+    machines(page: Int!, size: Int!, filter: MachineFilter): MachinePage!
     machine(id: UUID!): Machine
 }
 
@@ -27,6 +27,11 @@ input CreateMachineInput {
     machineType: String!
     name: String
     year: Int
+}
+
+input MachineFilter {
+    nameQuery: String
+    codeQuery: String
 }
 
 input UpdateMachineInput {

@@ -1,4 +1,4 @@
-package my.projects.factory.domain.filter.workflow;
+package my.projects.factory.domain.filter.foundation;
 
 /**
  * Filter for querying operation types.
@@ -7,7 +7,7 @@ package my.projects.factory.domain.filter.workflow;
  * values of {@code name} or {@code code}.
  * </p>
  */
-public record OperationTypeFilter(
+public record MachineFilter(
         String codeQuery,
         String nameQuery
 ) {

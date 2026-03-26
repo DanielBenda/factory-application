@@ -1,8 +1,11 @@
 package my.projects.factory.domain.service.foundation;
 
+import my.projects.factory.domain.filter.foundation.WorkerFilter;
 import my.projects.factory.domain.model.foundation.WorkerModel;
 import my.projects.factory.domain.service.CrudService;
 import my.projects.factory.domain.service.PageableService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
@@ -15,10 +18,11 @@ public interface WorkerService
         PageableService<WorkerModel, UUID> {
 
     /**
-     * Finds a worker by their surname.
+     * Returns workers with optional filtering (used for autocomplete).
      *
-     * @param surname the surname to search for
-     * @return the worker with the given surname, or {@code null} if not found
+     * @param filter   optional filter (name/surname search)
+     * @param pageable pagination configuration
+     * @return page of workers
      */
-    WorkerModel findBySurname(String surname);
+    Page<WorkerModel> findWorkers(WorkerFilter filter, Pageable pageable);
 }

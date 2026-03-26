@@ -1,8 +1,5 @@
 package my.projects.factory.domain.filter.foundation;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Filter for querying machine types.
  * <p>
@@ -10,11 +7,8 @@ import lombok.Setter;
  * values of {@code name} or {@code code}.
  * </p>
  */
-@Getter
-@Setter
-public class MachineTypeFilter {
-
-    private String nameQuery;
-
-    private String codeQuery;
+public record MachineTypeFilter(
+        String codeQuery,
+        String nameQuery
+) {
 }

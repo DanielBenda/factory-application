@@ -11,7 +11,7 @@ type PartPage {
 }
 
 extend type Query {
-    parts(page: Int!, size: Int!): PartPage!
+    parts(page: Int!, size: Int!, filter: PartFilter): PartPage!
     part(id: UUID!): Part
 }
 
@@ -25,6 +25,11 @@ input CreatePartInput {
     code: String!
     material: String!
     name: String!
+}
+
+input PartFilter {
+    codeQuery: String
+    nameQuery: String
 }
 
 input UpdatePartInput {

@@ -207,6 +207,18 @@ CREATE TABLE factory.t_part_operation
 ------------------------------------------------------------
 
 ------------------------------------------------------------
+-- machine
+------------------------------------------------------------
+
+CREATE INDEX idx_machine_name_trgm
+    ON factory.t_machine
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_machine_code_trgm
+    ON factory.t_machine
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
 -- machine type
 ------------------------------------------------------------
 
@@ -229,6 +241,42 @@ CREATE INDEX idx_operation_type_name_trgm
 CREATE INDEX idx_operation_type_code_trgm
     ON factory.t_operation_type
         USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- part
+------------------------------------------------------------
+
+CREATE INDEX idx_part_name_trgm
+    ON factory.t_part
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_part_code_trgm
+    ON factory.t_part
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- product type
+------------------------------------------------------------
+
+CREATE INDEX idx_product_type_name_trgm
+    ON factory.t_product_type
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_product_type_code_trgm
+    ON factory.t_product_type
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- worker
+------------------------------------------------------------
+
+CREATE INDEX idx_worker_name_trgm
+    ON factory.t_worker
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_worker_surname_trgm
+    ON factory.t_worker
+        USING gin (LOWER(surname) gin_trgm_ops);
 
 ------------------------------------------------------------
 -- TRUNCATE ALL

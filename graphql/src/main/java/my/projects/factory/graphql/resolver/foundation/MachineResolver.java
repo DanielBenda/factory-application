@@ -1,5 +1,6 @@
 package my.projects.factory.graphql.resolver.foundation;
 
+import my.projects.factory.domain.filter.foundation.MachineFilter;
 import my.projects.factory.domain.model.foundation.MachineModel;
 import my.projects.factory.domain.service.foundation.MachineService;
 import my.projects.factory.generated.GqlCreateMachineInput;
@@ -37,16 +38,21 @@ public class MachineResolver {
     }
 
     /**
-     * Returns all machines.
+     * GraphQL query for retrieving machines with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable of all machines as {@link GqlMachine} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, codeQuery)
+     * @return paginated list of {@link MachineModel} matching the filter criteria
      */
     @QueryMapping(name = "machines")
     public Page<MachineModel> machines(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument MachineFilter filter
     ) {
-        return machineService.findPage(PageRequest.of(page, size));
+        return machineService.findMachines(filter, PageRequest.of(page, size));
     }
 
     /**

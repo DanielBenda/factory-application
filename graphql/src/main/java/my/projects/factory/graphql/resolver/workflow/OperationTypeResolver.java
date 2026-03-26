@@ -8,7 +8,6 @@ import my.projects.factory.generated.GqlOperationType;
 import my.projects.factory.generated.GqlUpdateOperationTypeInput;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -47,8 +46,7 @@ public class OperationTypeResolver {
             @Argument int size,
             @Argument OperationTypeFilter filter
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return operationTypeService.findOperationTypes(filter, pageable);
+        return operationTypeService.findOperationTypes(filter, PageRequest.of(page, size));
     }
 
     /**

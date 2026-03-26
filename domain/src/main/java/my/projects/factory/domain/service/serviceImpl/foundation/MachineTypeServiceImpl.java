@@ -57,8 +57,8 @@ public class MachineTypeServiceImpl
         Map<String, String> filters = new HashMap<>();
 
         if (filter != null) {
-            filters.put("name", filter.getNameQuery());
-            filters.put("code", filter.getCodeQuery());
+            filters.put("name", filter.nameQuery());
+            filters.put("code", filter.codeQuery());
         }
 
         Map<String, Function<String, Supplier<Page<MachineType>>>> queryMap = Map.of(

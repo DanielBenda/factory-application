@@ -15,7 +15,7 @@ type WorkerPage {
 }
 
 extend type Query {
-    workers(page: Int!, size: Int!): WorkerPage!
+    workers(page: Int!, size: Int!, filter: WorkerFilter): WorkerPage!
     worker(id: UUID!): Worker
 }
 
@@ -39,4 +39,9 @@ input UpdateWorkerInput {
     surname: String!
     systemRole: String!
     workPosition: String
+}
+
+input WorkerFilter {
+    nameQuery: String
+    surnameQuery: String
 }

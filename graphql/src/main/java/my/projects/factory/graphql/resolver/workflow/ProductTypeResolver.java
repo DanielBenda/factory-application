@@ -1,5 +1,6 @@
 package my.projects.factory.graphql.resolver.workflow;
 
+import my.projects.factory.domain.filter.workflow.ProductTypeFilter;
 import my.projects.factory.domain.model.workflow.ProductTypeModel;
 import my.projects.factory.domain.service.workflow.ProductTypeService;
 import my.projects.factory.generated.GqlCreateProductTypeInput;
@@ -37,16 +38,21 @@ public class ProductTypeResolver {
     }
 
     /**
-     * Returns all product types.
+     * GraphQL query for retrieving product types with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable of all product types as {@link GqlProductType} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, codeQuery)
+     * @return paginated list of {@link ProductTypeModel} matching the filter criteria
      */
     @QueryMapping(name = "productTypes")
     public Page<ProductTypeModel> productTypes(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument ProductTypeFilter filter
     ) {
-        return productTypeService.findPage(PageRequest.of(page, size));
+        return productTypeService.findProductTypes(filter, PageRequest.of(page, size));
     }
 
     /**

@@ -57,8 +57,8 @@ public class OperationTypeServiceImpl
         Map<String, String> filters = new HashMap<>();
 
         if (filter != null) {
-            filters.put("name", filter.getNameQuery());
-            filters.put("code", filter.getCodeQuery());
+            filters.put("name", filter.nameQuery());
+            filters.put("code", filter.codeQuery());
         }
 
         Map<String, Function<String, Supplier<Page<OperationType>>>> queryMap = Map.of(

@@ -1,14 +1,13 @@
 package my.projects.factory.graphql.resolver.foundation;
 
+import my.projects.factory.domain.filter.foundation.MachineTypeFilter;
 import my.projects.factory.domain.model.foundation.MachineTypeModel;
 import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.generated.GqlCreateMachineTypeInput;
 import my.projects.factory.generated.GqlMachineType;
 import my.projects.factory.generated.GqlUpdateMachineTypeInput;
-import my.projects.factory.domain.filter.foundation.MachineTypeFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -53,8 +52,7 @@ public class MachineTypeResolver {
             @Argument int size,
             @Argument MachineTypeFilter filter
     ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return machineTypeService.findMachineTypes(filter, pageable);
+        return machineTypeService.findMachineTypes(filter, PageRequest.of(page, size));
     }
 
     /**

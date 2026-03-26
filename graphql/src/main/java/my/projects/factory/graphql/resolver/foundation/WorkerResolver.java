@@ -1,5 +1,6 @@
 package my.projects.factory.graphql.resolver.foundation;
 
+import my.projects.factory.domain.filter.foundation.WorkerFilter;
 import my.projects.factory.domain.model.foundation.WorkerModel;
 import my.projects.factory.domain.service.foundation.WorkerService;
 import my.projects.factory.generated.GqlCreateWorkerInput;
@@ -37,16 +38,21 @@ public class WorkerResolver {
     }
 
     /**
-     * Returns all workers.
+     * GraphQL query for retrieving workers with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable of all workers as {@link GqlWorker} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, surnameQuery)
+     * @return paginated list of {@link WorkerModel} matching the filter criteria
      */
     @QueryMapping(name = "workers")
     public Page<WorkerModel> workers(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument WorkerFilter filter
     ) {
-        return workerService.findPage(PageRequest.of(page, size));
+        return workerService.findWorkers(filter, PageRequest.of(page, size));
     }
 
     /**
