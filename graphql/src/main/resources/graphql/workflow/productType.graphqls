@@ -13,7 +13,7 @@ type ProductTypePage {
 }
 
 extend type Query {
-    productTypes(page: Int!, size: Int!): ProductTypePage!
+    productTypes(page: Int!, size: Int!, filter: ProductTypeFilter): ProductTypePage!
     productType(id: UUID!): ProductType
 }
 
@@ -27,6 +27,11 @@ input CreateProductTypeInput {
     code: String!
     description: String
     name: String!
+}
+
+input ProductTypeFilter {
+    nameQuery: String
+    codeQuery: String
 }
 
 input UpdateProductTypeInput {

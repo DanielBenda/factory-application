@@ -2,7 +2,9 @@
 -- SCHEMA
 ------------------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS factory;
+SET search_path TO factory, pg_catalog;
 
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA factory;
 ------------------------------------------------------------
 -- DROP ALL TABLES
 ------------------------------------------------------------
@@ -165,7 +167,8 @@ CREATE TABLE factory.t_operation_type
 (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     description VARCHAR,
-    name        VARCHAR(100) NOT NULL UNIQUE,
+    code            VARCHAR(50)  NOT NULL UNIQUE,
+    name        VARCHAR(100) NOT NULL,
     created     DATE         NOT NULL,
     created_by  VARCHAR(100) NOT NULL
 );
@@ -199,6 +202,81 @@ CREATE TABLE factory.t_part_operation
     FOREIGN KEY (part_id) REFERENCES factory.t_part (id) ON DELETE CASCADE,
     FOREIGN KEY (operation_id) REFERENCES factory.t_operation (id) ON DELETE CASCADE
 );
+------------------------------------------------------------
+-- INDEXES
+------------------------------------------------------------
+
+------------------------------------------------------------
+-- machine
+------------------------------------------------------------
+
+CREATE INDEX idx_machine_name_trgm
+    ON factory.t_machine
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_machine_code_trgm
+    ON factory.t_machine
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- machine type
+------------------------------------------------------------
+
+CREATE INDEX idx_machine_type_name_trgm
+    ON factory.t_machine_type
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_machine_type_code_trgm
+    ON factory.t_machine_type
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- operation type
+------------------------------------------------------------
+
+CREATE INDEX idx_operation_type_name_trgm
+    ON factory.t_operation_type
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_operation_type_code_trgm
+    ON factory.t_operation_type
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- part
+------------------------------------------------------------
+
+CREATE INDEX idx_part_name_trgm
+    ON factory.t_part
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_part_code_trgm
+    ON factory.t_part
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- product type
+------------------------------------------------------------
+
+CREATE INDEX idx_product_type_name_trgm
+    ON factory.t_product_type
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_product_type_code_trgm
+    ON factory.t_product_type
+        USING gin (LOWER(code) gin_trgm_ops);
+
+------------------------------------------------------------
+-- worker
+------------------------------------------------------------
+
+CREATE INDEX idx_worker_name_trgm
+    ON factory.t_worker
+        USING gin (LOWER(name) gin_trgm_ops);
+
+CREATE INDEX idx_worker_surname_trgm
+    ON factory.t_worker
+        USING gin (LOWER(surname) gin_trgm_ops);
 
 ------------------------------------------------------------
 -- TRUNCATE ALL
@@ -289,11 +367,10 @@ VALUES ('MT-CNC3', '3-osé vertikální CNC centrum vhodné pro sériové obráb
 
 -- Machines
 INSERT INTO factory.t_machine (code, machine_type_id, name, year)
-SELECT
-    CONCAT('MC-', n),
-    mt.id,
-    CONCAT(mt.name, ' ', n),
-    2010 + (n % 10)
+SELECT CONCAT('MC-', n),
+       mt.id,
+       CONCAT(mt.name, ' ', n),
+       2010 + (n % 10)
 FROM factory.t_machine_type mt
          CROSS JOIN generate_series(1, 10) AS n
 ORDER BY mt.code, n
@@ -315,27 +392,23 @@ SELECT CONCAT('PART-', n),
 FROM generate_series(1, 20) n;
 
 -- Operation types
-INSERT INTO factory.t_operation_type (name, description, created, created_by)
-VALUES
-    ('Frézování',   'Třískové obrábění pomocí frézy', CURRENT_DATE, 'ADMIN'),
-    ('Soustružení', 'Obrábění rotačních dílů',        CURRENT_DATE, 'ADMIN'),
-    ('Laserování',  'Řezání materiálu laserem',       CURRENT_DATE, 'ADMIN'),
-    ('Ohýbání',     'Tváření materiálu za studena',   CURRENT_DATE, 'ADMIN'),
-    ('Broušení',    'Dokončovací operace povrchu',    CURRENT_DATE, 'ADMIN'),
-    ('Vrtání',      'Vytváření otvorů',               CURRENT_DATE, 'ADMIN');
+INSERT INTO factory.t_operation_type (code, name, description, created, created_by)
+VALUES ('FREZ', 'Frézování', 'Třískové obrábění pomocí frézy', CURRENT_DATE, 'ADMIN'),
+       ('SOUS', 'Soustružení', 'Obrábění rotačních dílů', CURRENT_DATE, 'ADMIN'),
+       ('LASER', 'Laserování', 'Řezání materiálu laserem', CURRENT_DATE, 'ADMIN'),
+       ('BEND', 'Ohýbání', 'Tváření materiálu za studena', CURRENT_DATE, 'ADMIN'),
+       ('BROU', 'Broušení', 'Dokončovací operace povrchu', CURRENT_DATE, 'ADMIN'),
+       ('DRILL', 'Vrtání', 'Vytváření otvorů', CURRENT_DATE, 'ADMIN');
 
 -- Operations
 INSERT INTO factory.t_operation (operation_type_id, name, description, estimated_time_minutes)
 SELECT ot.id, o.name, o.description, o.time
-FROM (
-         VALUES
-             ('Frézování',   'Hrubovací frézování',  'Hrubé obrábění ploch', 12),
-             ('Frézování',   'Dokončovací frézování','Přesné obrábění',      8),
-             ('Soustružení', 'Soustružení hřídele',  'Rotační obrábění',     10),
-             ('Laserování',  'Laserový řez',         'Řezání plechu',        5),
-             ('Ohýbání',     'Ohyb plechu',          'Ohyb na lisu',         6),
-             ('Broušení',    'Jemné broušení',       'Finální povrch',       7)
-     ) AS o(type, name, description, time)
+FROM (VALUES ('Frézování', 'Hrubovací frézování', 'Hrubé obrábění ploch', 12),
+             ('Frézování', 'Dokončovací frézování', 'Přesné obrábění', 8),
+             ('Soustružení', 'Soustružení hřídele', 'Rotační obrábění', 10),
+             ('Laserování', 'Laserový řez', 'Řezání plechu', 5),
+             ('Ohýbání', 'Ohyb plechu', 'Ohyb na lisu', 6),
+             ('Broušení', 'Jemné broušení', 'Finální povrch', 7)) AS o(type, name, description, time)
          JOIN factory.t_operation_type ot
               ON ot.name = o.type;
 

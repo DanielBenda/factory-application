@@ -40,4 +40,27 @@ public interface MachineRepository extends JpaRepository<Machine, UUID> {
     @NonNull
     @EntityGraph(attributePaths = "machineTypeId")
     Page<Machine> findAll(@Nonnull Pageable pageable);
+
+    /**
+     * Finds {@link Machine} entities contains the given search string, ignoring case.
+     * <p>
+     *
+     * @param name     the substring to search for in the name field
+     * @param pageable pagination information (page number, size, sorting)
+     * @return a {@link Page} of matching {@link Machine} entities
+     */
+    @EntityGraph(attributePaths = "machineTypeId")
+    Page<Machine> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    /**
+     * Finds {@link Machine} entities contains the given search string, ignoring case.
+     * <p>
+     *
+     * @param code     the substring to search for in the code field
+     * @param pageable pagination information (page number, size, sorting)
+     * @return a {@link Page} of matching {@link Machine} entities
+     */
+    @EntityGraph(attributePaths = "machineTypeId")
+    Page<Machine> findByCodeContainingIgnoreCase(String code, Pageable pageable);
+
 }

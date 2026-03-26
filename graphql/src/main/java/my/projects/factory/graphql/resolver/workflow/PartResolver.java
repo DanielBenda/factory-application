@@ -1,5 +1,6 @@
 package my.projects.factory.graphql.resolver.workflow;
 
+import my.projects.factory.domain.filter.workflow.PartFilter;
 import my.projects.factory.domain.model.workflow.PartModel;
 import my.projects.factory.domain.service.workflow.PartService;
 import my.projects.factory.generated.GqlCreatePartInput;
@@ -37,16 +38,21 @@ public class PartResolver {
     }
 
     /**
-     * Returns all parts.
+     * GraphQL query for retrieving parts with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable of all parts as {@link GqlPart} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, codeQuery)
+     * @return paginated list of {@link PartModel} matching the filter criteria
      */
     @QueryMapping(name = "parts")
     public Page<PartModel> parts(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument PartFilter filter
     ) {
-        return partService.findPage(PageRequest.of(page, size));
+        return partService.findParts(filter, PageRequest.of(page, size));
     }
 
     /**

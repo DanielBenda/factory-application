@@ -1,5 +1,6 @@
 package my.projects.factory.graphql.resolver.foundation;
 
+import my.projects.factory.domain.filter.foundation.MachineTypeFilter;
 import my.projects.factory.domain.model.foundation.MachineTypeModel;
 import my.projects.factory.domain.service.foundation.MachineTypeService;
 import my.projects.factory.generated.GqlCreateMachineTypeInput;
@@ -37,16 +38,21 @@ public class MachineTypeResolver {
     }
 
     /**
-     * Returns all machine types.
+     * GraphQL query for retrieving machine types with pagination and optional filtering.
+     * <p>
      *
-     * @return pageable of all machine types as {@link GqlMachineType} objects
+     * @param page   zero-based index of the requested page
+     * @param size   number of records per page
+     * @param filter optional filter containing search parameters (e.g. nameQuery, codeQuery)
+     * @return paginated list of {@link MachineTypeModel} matching the filter criteria
      */
-    @QueryMapping(name = "machineTypes")
+    @QueryMapping
     public Page<MachineTypeModel> machineTypes(
             @Argument int page,
-            @Argument int size
+            @Argument int size,
+            @Argument MachineTypeFilter filter
     ) {
-        return machineTypeService.findPage(PageRequest.of(page, size));
+        return machineTypeService.findMachineTypes(filter, PageRequest.of(page, size));
     }
 
     /**

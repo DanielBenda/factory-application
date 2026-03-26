@@ -1,5 +1,6 @@
 type OperationType {
     id: UUID!
+    code: String!
     description: String
     name: String!
     created: Date!
@@ -12,7 +13,7 @@ type OperationTypePage {
 }
 
 extend type Query {
-    operationTypes(page: Int, size: Int!): OperationTypePage!
+    operationTypes(page: Int, size: Int!, filter: OperationTypeFilter): OperationTypePage!
     operationType(id: UUID!): OperationType
 }
 
@@ -23,15 +24,22 @@ extend type Mutation {
 }
 
 input CreateOperationTypeInput {
+    code: String!
     description: String
     name: String!
     created: Date!
-    createdBy: String!
+    createdBy: String
+}
+
+input OperationTypeFilter {
+    nameQuery: String
+    codeQuery: String
 }
 
 input UpdateOperationTypeInput {
+    code: String!
     description: String
     name: String!
     created: Date!
-    createdBy: String!
+    createdBy: String
 }

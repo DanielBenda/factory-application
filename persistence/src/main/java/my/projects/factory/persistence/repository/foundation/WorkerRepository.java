@@ -2,6 +2,7 @@ package my.projects.factory.persistence.repository.foundation;
 
 import jakarta.annotation.Nonnull;
 import my.projects.factory.persistence.entity.foundation.Worker;
+import my.projects.factory.persistence.entity.workflow.OperationType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -43,10 +44,25 @@ public interface WorkerRepository extends JpaRepository<Worker, UUID> {
     Page<Worker> findAll(@Nonnull Pageable pageable);
 
     /**
-     * Finds a worker by their surname.
+     * Finds {@link OperationType} entities contains the given search string, ignoring case.
+     * <p>
      *
-     * @param surname the surname of the worker to find; must not be null
-     * @return an {@link Optional} containing the worker if found, or empty if not found
+     * @param name     the substring to search for in the name field
+     * @param pageable pagination information (page number, size, sorting)
+     * @return a {@link Page} of matching {@link OperationType} entities
      */
-    Optional<Worker> findBySurname(String surname);
+    @EntityGraph(attributePaths = "departmentId")
+    Page<Worker> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    /**
+     * Finds {@link OperationType} entities contains the given search string, ignoring case.
+     * <p>
+     *
+     * @param surname  the substring to search for in the surname field
+     * @param pageable pagination information (page number, size, sorting)
+     * @return a {@link Page} of matching {@link OperationType} entities
+     */
+    @EntityGraph(attributePaths = "departmentId")
+    Page<Worker> findBySurnameContainingIgnoreCase(String surname, Pageable pageable);
+
 }
