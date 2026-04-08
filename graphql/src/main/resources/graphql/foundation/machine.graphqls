@@ -3,7 +3,7 @@ type Machine {
     code: String!
     machineType: String!
     name: String
-    year: Int
+    productionYear: Int
 }
 
 type MachinePage {
@@ -26,7 +26,7 @@ input CreateMachineInput {
     code: String!
     machineType: String!
     name: String
-    year: Int
+    productionYear: Int
 }
 
 input MachineFilter {
@@ -38,5 +38,5 @@ input UpdateMachineInput {
     code: String!
     machineType: String!
     name: String
-    year: Int
+    productionYear: Int
 }

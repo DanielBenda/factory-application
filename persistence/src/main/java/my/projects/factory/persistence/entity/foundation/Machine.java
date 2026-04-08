@@ -52,7 +52,7 @@ public class Machine implements Serializable {
     @Column(name = MachineSchema.NAME, length = 100)
     private String name;
 
-    @Column(name = MachineSchema.YEAR)
-    private Integer year;
+    @Column(name = MachineSchema.PRODUCTION_YEAR)
+    private Integer productionYear;
 
 }

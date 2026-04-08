@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class MachineTypeGraphQLTest {
+public class MachineTypeGraphQLIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -35,7 +35,7 @@ public class MachineMapper implements EntityMapper<MachineModel, Machine> {
                 .code(machine.getCode())
                 .machineType(machine.getMachineTypeId().getName())
                 .name(machine.getName())
-                .year(machine.getYear())
+                .productionYear(machine.getProductionYear())
                 .build();
     }
 
@@ -51,7 +51,7 @@ public class MachineMapper implements EntityMapper<MachineModel, Machine> {
         machine.setCode(machineModel.code());
         machine.setMachineTypeId(resolveMachineType(machineModel.machineType()));
         machine.setName(machineModel.name());
-        machine.setYear(machineModel.year());
+        machine.setProductionYear(machineModel.productionYear());
         return machine;
     }
 
