@@ -11,15 +11,15 @@ import java.util.UUID;
  * This record is used in the business logic and GraphQL API.
  * It is validated to ensure that required fields are not blank.
  *
- * @param id          Unique identifier of the worker, must not be null.
- * @param code        Code of the machine, must not be blank.
- * @param machineType Machine type of the machine, must not be blank.
- * @param name        Name of the machine.
- * @param year        Year of creating a machine.
+ * @param id             Unique identifier of the worker, must not be null.
+ * @param code           Code of the machine, must not be blank.
+ * @param machineType    Machine type of the machine, must not be blank.
+ * @param name           Name of the machine.
+ * @param productionYear Year of creating a machine.
  */
 @Builder
 public record MachineModel(@Nonnull UUID id, @Nonnull String code, @Nonnull String machineType, String name,
-                           Integer year) {
+                           Integer productionYear) {
     public MachineModel {
         if (code.isBlank()) {
             throw new IllegalArgumentException("Machine code must not be blank.");

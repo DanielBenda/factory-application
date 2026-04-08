@@ -106,7 +106,7 @@ public class MachineResolver {
                 .code(input.getCode())
                 .machineType(input.getMachineType())
                 .name(input.getName())
-                .year(input.getYear())
+                .productionYear(input.getProductionYear())
                 .build();
         MachineModel created = machineService.create(machine);
         return toGql(created);
@@ -147,7 +147,7 @@ public class MachineResolver {
                 .code(input.getCode() != null ? input.getCode() : existing.code())
                 .machineType(input.getMachineType() != null ? input.getMachineType() : existing.machineType())
                 .name(input.getName() != null ? input.getName() : existing.name())
-                .year(input.getYear() != null ? input.getYear() : existing.year())
+                .productionYear(input.getProductionYear() != null ? input.getProductionYear() : existing.productionYear())
                 .build();
 
         MachineModel saved = machineService.update(id, updatedMachine);
@@ -170,7 +170,7 @@ public class MachineResolver {
                 .withCode(model.code())
                 .withMachineType(model.machineType())
                 .withName(model.name())
-                .withYear(model.year())
+                .withProductionYear(model.productionYear())
                 .build();
     }
 }

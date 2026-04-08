@@ -25,7 +25,7 @@ import java.util.UUID;
  */
 @Data
 @Entity
-@Table(name = DepartmentSchema.TABLE, schema = DepartmentSchema.SCHEMA)
+@Table(name = DepartmentSchema.TABLE)
 public class Department implements Serializable {
 
     @Serial
@@ -36,13 +36,13 @@ public class Department implements Serializable {
     @Column(name = DepartmentSchema.ID, nullable = false)
     private UUID id;
 
-    @Column(name = DepartmentSchema.CODE, nullable = false, length = 50)
+    @Column(name = DepartmentSchema.CODE, nullable = false, length = 50, unique = true)
     private String code;
 
     @Column(name = DepartmentSchema.LEADER, length = 100)
     private String leader;
 
-    @Column(name = DepartmentSchema.NAME, nullable = false, length = 100)
+    @Column(name = DepartmentSchema.NAME, nullable = false, length = 100, unique = true)
     private String name;
 
 }

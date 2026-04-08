@@ -13,7 +13,7 @@ public class MachineSchema {
     public static final String CODE = "code";
     public static final String MACHINE_TYPE = "machine_type_id";
     public static final String NAME = "name";
-    public static final String YEAR = "year";
+    public static final String PRODUCTION_YEAR = "production_Year";
 
     private MachineSchema() {}
 }

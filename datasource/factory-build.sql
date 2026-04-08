@@ -33,9 +33,9 @@ DROP TABLE IF EXISTS factory.t_product_type CASCADE;
 CREATE TABLE factory.t_department
 (
     id     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    code   VARCHAR(50)  NOT NULL,
+    code   VARCHAR(50)  NOT NULL UNIQUE,
     leader VARCHAR(100),
-    name   VARCHAR(100) NOT NULL
+    name   VARCHAR(100) NOT NULL UNIQUE
 );
 
 ------------------------------------------------------------
@@ -111,7 +111,7 @@ CREATE TABLE factory.t_machine
     code            VARCHAR(50) UNIQUE NOT NULL,
     machine_type_id UUID               NOT NULL,
     name            VARCHAR(100),
-    year            INT,
+    production_year INT,
 
     FOREIGN KEY (machine_type_id) REFERENCES factory.t_machine_type (id) ON DELETE CASCADE
 );
@@ -167,7 +167,7 @@ CREATE TABLE factory.t_operation_type
 (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     description VARCHAR,
-    code            VARCHAR(50)  NOT NULL UNIQUE,
+    code        VARCHAR(50)  NOT NULL UNIQUE,
     name        VARCHAR(100) NOT NULL,
     created     DATE         NOT NULL,
     created_by  VARCHAR(100) NOT NULL
@@ -366,7 +366,7 @@ VALUES ('MT-CNC3', '3-osé vertikální CNC centrum vhodné pro sériové obráb
        ('MT-GRIND', 'Bruska pro finální obrábění povrchů s velmi vysokou přesností.', 'Broušení');
 
 -- Machines
-INSERT INTO factory.t_machine (code, machine_type_id, name, year)
+INSERT INTO factory.t_machine (code, machine_type_id, name, production_year)
 SELECT CONCAT('MC-', n),
        mt.id,
        CONCAT(mt.name, ' ', n),
